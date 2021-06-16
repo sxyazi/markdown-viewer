@@ -1,11 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"github.com/Depado/bfchroma"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/russross/blackfriday/v2"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -46,12 +43,12 @@ func file(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	output := blackfriday.Run(
-		data,
-		blackfriday.WithRenderer(bfchroma.NewRenderer(bfchroma.Style("github"))),
-	)
+	output, err := markdownRender(data)
+	if err != nil {
+		return
+	}
 
-	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(output))
+	doc, err := goquery.NewDocumentFromReader(output)
 	doc.Find("img").Each(func(i int, selection *goquery.Selection) {
 		src, _ := selection.Attr("src")
 		selection.SetAttr("src", forwardResource(path.Dir(p), src))

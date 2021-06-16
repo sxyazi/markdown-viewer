@@ -6,6 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Markdown Viewer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.4/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@2.10.0/github-markdown.min.css">
     <style>
@@ -61,7 +62,7 @@
         }
     </style>
 </head>
-<body class="w-screen h-screen flex">
+<body class="w-screen h-screen flex overflow-hidden">
 <aside class="w-1/6 px-7 py-8 flex flex-col overflow-auto box-border border-r border-gray-100">
     <h3 class="mb-5 font-bold text-2xl text-gray-600">Files</h3>
     <ul id="files" class="flex flex-col text-sm text-gray-500"></ul>
@@ -72,6 +73,8 @@
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js"></script>
 
 <script id="file-template" type="text/html">
     <li class="py-3 pl-6 cursor-pointer hover:text-green-500"></li>
@@ -111,6 +114,15 @@
         }, function (html) {
             $('#content').html(html)
             isSwitch || $('#content').animate({scrollTop: 0}, 'fast')
+            renderMathInElement($('#content').get(0), {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "\\[", right: "\\]", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false}
+                ]
+            })
+
             done && done(file)
         })
     }
