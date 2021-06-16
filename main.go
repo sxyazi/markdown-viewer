@@ -10,8 +10,6 @@ import (
 	"path"
 )
 
-var WORKING_PATH = getArgument()
-
 func home(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, newTemplate())
 }
@@ -54,7 +52,7 @@ func file(w http.ResponseWriter, req *http.Request) {
 }
 
 func files(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, jsonEncode(getFiles(WORKING_PATH)))
+	fmt.Fprintf(w, jsonEncode(getFiles(store.workingPath)))
 }
 
 func main() {

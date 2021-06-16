@@ -78,66 +78,111 @@
 </script>
 
 <script>
+    var allFiles = {}
     var currentFile = {}
     var fileTemplate = $('#file-template').html()
 
-    $.get('/files', function (files) {
-        try {
-            files = JSON.parse(files)
-        } catch (e) {
-            files = []
+    function open(path, done) {
+        if (!allFiles.list) {
+            return done(false)
         }
 
-        for (var i = 0; i < files.length; i++) {
-            var file = $(fileTemplate)
-            file.text(files[i].name)
-            file.data('info', files[i])
-            file.attr('title', files[i].path)
-
-            $('#files').append(file)
+        var file = null
+        for (var i = 0; i < allFiles.list.length; i++) {
+            if (path === allFiles.list[i].path) {
+                file = allFiles.list[i]
+                break
+            }
         }
-    })
 
-    $('aside').on('click', 'li', function () {
-        var info = $(this).data('info')
-        if (!info) {
+        if (!file) {
+            return done(false)
+        }
+
+        currentFile = file
+        localStorage.setItem('recent:' + allFiles.root, file.path)
+        $('aside li').removeClass('active')
+        $('aside li[path="' + file.path + '"]').addClass('active')
+
+        $.post('/file', {
+            path: file.path
+        }, function (html) {
+            $('#content').html(html)
+            done && done(file)
+        })
+    }
+
+    function openRecent(done) {
+        open(localStorage.getItem('recent:' + allFiles.root), done)
+    }
+
+    function openReadme() {
+        if (!allFiles.list) {
             return
         }
 
-        currentFile = info
-        $('aside li').removeClass('active')
-        $(this).addClass('active')
+        var finds = []
+        for (var i = 0; i < allFiles.list.length; i++) {
+            if (allFiles.list[i].name.toLowerCase() === 'readme.md') {
+                finds.push(allFiles.list[i].path)
+            }
+        }
 
-        $.post('/file', {
-            path: info.path
-        }, function (html) {
-            $('#content').html(html)
+        if (finds.length < 1) {
+            return
+        }
+
+        finds.sort(function (a, b) {
+            return a.length > b.length ? 1 : -1
+        })
+
+        open(finds.shift())
+    }
+
+    $.get('/files', function (files) {
+        try {
+            allFiles = JSON.parse(files)
+        } catch (e) {
+            allFiles = {}
+        }
+
+        for (var i = 0; i < allFiles.list.length; i++) {
+            var file = $(fileTemplate)
+            file.text(allFiles.list[i].name)
+            file.attr('path', allFiles.list[i].path)
+            file.attr('title', allFiles.list[i].path)
+
+            $('#files').append(file)
+        }
+
+        openRecent(function (file) {
+            file || openReadme()
         })
     })
 
+    $('aside').on('click', 'li', function () {
+        open($(this).attr('path'))
+    })
+
     setTimeout(function watcher() {
-        if (!currentFile.name) {
+        if (!currentFile.path) {
             return setTimeout(watcher, 500)
         }
 
         $.post('/stat', {
             path: currentFile.path
-        }, function (file) {
+        }, function (stat) {
             try {
-                file = JSON.parse(file)
+                stat = JSON.parse(stat)
             } catch (e) {
-                file = {}
+                stat = {}
             }
 
-            if (file.updated_at <= currentFile.updated_at) {
+            if (stat.updated_at <= currentFile.updated_at) {
                 return setTimeout(watcher, 500)
             }
 
-            $.post('/file', {
-                path: currentFile.path
-            }, function (html) {
-                $('#content').html(html)
-
+            open(currentFile.path, function (file) {
                 currentFile.updated_at = file.updated_at
                 setTimeout(watcher, 500)
             })

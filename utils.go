@@ -8,25 +8,29 @@ import (
 	"strings"
 )
 
-func getFiles(parent string) (files []*File) {
-	filepath.Walk(parent, func(path string, info fs.FileInfo, err error) error {
+func getFiles(root string) (files Files) {
+	files.Root = root
+
+	filepath.Walk(root, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
+		}
+
+		if !strings.HasSuffix(strings.ToLower(info.Name()), ".md") {
+			return nil
 		}
 
 		if isIgnored(path) {
 			return nil
 		}
 
-		if strings.HasSuffix(strings.ToLower(info.Name()), ".md") {
-			files = append(files, &File{
-				Name:      info.Name(),
-				Path:      path,
-				Size:      info.Size(),
-				Exists:    true,
-				UpdatedAt: info.ModTime().UnixNano(),
-			})
-		}
+		files.List = append(files.List, &File{
+			Name:      info.Name(),
+			Path:      path,
+			Size:      info.Size(),
+			Exists:    true,
+			UpdatedAt: info.ModTime().UnixNano(),
+		})
 
 		return nil
 	})
