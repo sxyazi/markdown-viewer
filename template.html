@@ -88,6 +88,7 @@
         }
 
         var file = null
+        var isSwitch = false
         for (var i = 0; i < allFiles.list.length; i++) {
             if (path === allFiles.list[i].path) {
                 file = allFiles.list[i]
@@ -99,6 +100,7 @@
             return done(false)
         }
 
+        isSwitch = file.path === currentFile.path
         currentFile = file
         localStorage.setItem('recent:' + allFiles.root, file.path)
         $('aside li').removeClass('active')
@@ -108,6 +110,7 @@
             path: file.path
         }, function (html) {
             $('#content').html(html)
+            isSwitch || $('#content').animate({scrollTop: 0})
             done && done(file)
         })
     }
