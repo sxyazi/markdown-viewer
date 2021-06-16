@@ -110,7 +110,7 @@
             path: file.path
         }, function (html) {
             $('#content').html(html)
-            isSwitch || $('#content').animate({scrollTop: 0})
+            isSwitch || $('#content').animate({scrollTop: 0}, 'fast')
             done && done(file)
         })
     }

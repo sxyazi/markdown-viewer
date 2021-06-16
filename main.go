@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/Depado/bfchroma"
+	"github.com/PuerkitoBio/goquery"
 	"github.com/russross/blackfriday/v2"
 	"io/ioutil"
 	"net/http"
@@ -11,7 +13,7 @@ import (
 )
 
 func home(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, newTemplate())
+	fmt.Fprint(w, newTemplate())
 }
 
 func stat(w http.ResponseWriter, req *http.Request) {
@@ -34,11 +36,12 @@ func stat(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	fmt.Fprintf(w, jsonEncode(resp))
+	fmt.Fprint(w, jsonEncode(resp))
 }
 
 func file(w http.ResponseWriter, req *http.Request) {
-	data, err := ioutil.ReadFile(req.FormValue("path"))
+	p := req.FormValue("path")
+	data, err := ioutil.ReadFile(p)
 	if err != nil {
 		return
 	}
@@ -48,11 +51,35 @@ func file(w http.ResponseWriter, req *http.Request) {
 		blackfriday.WithRenderer(bfchroma.NewRenderer(bfchroma.Style("github"))),
 	)
 
-	w.Write(output)
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(output))
+	doc.Find("img").Each(func(i int, selection *goquery.Selection) {
+		src, _ := selection.Attr("src")
+		selection.SetAttr("src", forwardResource(path.Dir(p), src))
+	})
+
+	html, _ := doc.Html()
+	fmt.Fprint(w, html)
 }
 
 func files(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, jsonEncode(getFiles(store.workingPath)))
+	fmt.Fprint(w, jsonEncode(getFiles(store.workingPath)))
+}
+
+func forward(w http.ResponseWriter, req *http.Request) {
+	p := req.URL.Query().Get("path")
+
+	if _, err := os.Stat(p); err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	if data, err := ioutil.ReadFile(p); err == nil {
+		w.Header().Set("Content-Type", contentType(p))
+		w.Write(data)
+		return
+	}
+
+	w.WriteHeader(http.StatusInternalServerError)
 }
 
 func main() {
@@ -60,6 +87,7 @@ func main() {
 	http.HandleFunc("/stat", stat)
 	http.HandleFunc("/file", file)
 	http.HandleFunc("/files", files)
+	http.HandleFunc("/forward", forward)
 
 	http.ListenAndServe(":3000", nil)
 }

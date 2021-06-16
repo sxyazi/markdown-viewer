@@ -3,8 +3,11 @@ package main
 import (
 	"encoding/json"
 	"io/fs"
+	"net/url"
 	"os"
+	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -73,6 +76,22 @@ func jsonEncode(value interface{}) string {
 	return string(result)
 }
 
+func contentType(filename string) string {
+	switch path.Ext(strings.ToLower(filename)) {
+	case ".jpg":
+	case ".jpeg":
+		return "image/jpeg"
+	case ".png":
+		return "image/png"
+	case ".gif":
+		return "image/gif"
+	case ".svg":
+		return "image/svg+xml"
+	}
+
+	return "application/octet-stream"
+}
+
 func fileExistsDeep(root string, directory string, filename string) bool {
 	directory = wrapSlash(directory)
 	parts := strings.Split(wrapSlash(root), directory)
@@ -95,4 +114,13 @@ func fileExistsDeep(root string, directory string, filename string) bool {
 	}
 
 	return false
+}
+
+func forwardResource(parent, src string) string {
+	r, _ := regexp.Compile("^(https?:)?//")
+	if r.MatchString(src) {
+		return src
+	}
+
+	return "/forward?path=" + url.QueryEscape(path.Join(parent, src))
 }
