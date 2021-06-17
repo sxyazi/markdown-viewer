@@ -63,9 +63,9 @@
     </style>
 </head>
 <body class="w-screen h-screen flex overflow-hidden">
-<aside class="w-1/6 px-7 py-8 flex flex-col overflow-auto box-border border-r border-gray-100">
-    <h3 class="mb-5 font-bold text-2xl text-gray-600">Files</h3>
-    <ul id="files" class="flex flex-col text-sm text-gray-500"></ul>
+<aside class="w-1/6 flex flex-col box-border border-r border-gray-100">
+    <h3 class="ml-7 mt-8 mb-5 font-bold text-2xl text-gray-600">Files</h3>
+    <ul id="files" class="px-7 pb-7 flex flex-col text-sm overflow-auto text-gray-500"></ul>
 </aside>
 
 <section id="content" class="w-5/6 px-10 py-7 overflow-auto markdown-body">
@@ -106,14 +106,16 @@
         isSwitch = file.path === currentFile.path
         currentFile = file
         localStorage.setItem('recent:' + allFiles.root, file.path)
-        $('aside li').removeClass('active')
-        $('aside li[path="' + file.path + '"]').addClass('active')
+
+        scrollToFit()
+        $('#files li').removeClass('active')
+        $('#files li[path="' + file.path + '"]').addClass('active')
 
         $.post('/file', {
             path: file.path
         }, function (html) {
             $('#content').html(html)
-            isSwitch || $('#content').animate({scrollTop: 0}, 'fast')
+            isSwitch || $('#content').animate({scrollTop: 0}, 200)
             renderMathInElement($('#content').get(0), {
                 delimiters: [
                     {left: "$$", right: "$$", display: true},
@@ -131,7 +133,7 @@
         open(localStorage.getItem('recent:' + allFiles.root), done)
     }
 
-    function openReadme() {
+    function openReadme(done) {
         if (!allFiles.list) {
             return
         }
@@ -151,7 +153,17 @@
             return a.length > b.length ? 1 : -1
         })
 
-        open(finds.shift())
+        open(finds.shift(), done)
+    }
+
+    function scrollToFit() {
+        var filesElem = $('#files')
+        var fileElem = filesElem.find('li[path="' + currentFile.path + '"]')
+        var scrollTop = fileElem.offset().top - filesElem.offset().top + filesElem.scrollTop()
+
+        if (scrollTop > filesElem.scrollTop() + filesElem.height()) {
+            filesElem.animate({scrollTop: scrollTop}, 200)
+        }
     }
 
     $.get('/files', function (files) {
@@ -175,7 +187,7 @@
         })
     })
 
-    $('aside').on('click', 'li', function () {
+    $('#files').on('click', 'li', function () {
         open($(this).attr('path'))
     })
 
@@ -197,8 +209,8 @@
                 return setTimeout(watcher, 500)
             }
 
-            open(currentFile.path, function (file) {
-                currentFile.updated_at = file.updated_at
+            open(currentFile.path, function () {
+                currentFile.updated_at = stat.updated_at
                 setTimeout(watcher, 500)
             })
         })

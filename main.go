@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strings"
 )
 
 func home(w http.ResponseWriter, req *http.Request) {
@@ -52,6 +53,15 @@ func file(w http.ResponseWriter, req *http.Request) {
 	doc.Find("img").Each(func(i int, selection *goquery.Selection) {
 		src, _ := selection.Attr("src")
 		selection.SetAttr("src", forwardResource(path.Dir(p), src))
+	})
+	doc.Find("a").Each(func(i int, selection *goquery.Selection) {
+		href, _ := selection.Attr("href")
+
+		if isExternalLink(href) {
+			selection.SetAttr("target", "_blank")
+		} else {
+			selection.SetAttr("href", "/"+strings.TrimLeft(href, "/"))
+		}
 	})
 
 	html, _ := doc.Html()

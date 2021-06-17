@@ -157,9 +157,13 @@ func fileExistsDeep(root string, directory string, filename string) bool {
 	return false
 }
 
-func forwardResource(parent, src string) string {
+func isExternalLink(link string) bool {
 	r, _ := regexp.Compile("^(https?:)?//")
-	if r.MatchString(src) {
+	return r.MatchString(link)
+}
+
+func forwardResource(parent, src string) string {
+	if isExternalLink(src) {
 		return src
 	}
 
