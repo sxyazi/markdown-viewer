@@ -2,12 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
-	"strings"
 )
 
 func home(w http.ResponseWriter, req *http.Request) {
@@ -38,33 +36,11 @@ func stat(w http.ResponseWriter, req *http.Request) {
 }
 
 func file(w http.ResponseWriter, req *http.Request) {
-	p := req.FormValue("path")
-	data, err := ioutil.ReadFile(p)
+	html, err := markdown(req.FormValue("path"))
 	if err != nil {
 		return
 	}
 
-	output, err := markdownRender(data)
-	if err != nil {
-		return
-	}
-
-	doc, err := goquery.NewDocumentFromReader(output)
-	doc.Find("img").Each(func(i int, selection *goquery.Selection) {
-		src, _ := selection.Attr("src")
-		selection.SetAttr("src", forwardResource(path.Dir(p), src))
-	})
-	doc.Find("a").Each(func(i int, selection *goquery.Selection) {
-		href, _ := selection.Attr("href")
-
-		if isExternalLink(href) {
-			selection.SetAttr("target", "_blank")
-		} else {
-			selection.SetAttr("href", "/"+strings.TrimLeft(href, "/"))
-		}
-	})
-
-	html, _ := doc.Html()
 	fmt.Fprint(w, html)
 }
 
