@@ -181,7 +181,7 @@
 
     function openReadme(done) {
         if (!allFiles.list) {
-            return
+            return done(false)
         }
 
         var finds = []
@@ -192,7 +192,7 @@
         }
 
         if (finds.length < 1) {
-            return
+            return done(false)
         }
 
         finds.sort(function (a, b) {
@@ -200,6 +200,14 @@
         })
 
         open(finds.shift(), done)
+    }
+
+    function openFirst(done) {
+        if (allFiles.list && allFiles.list.length > 0) {
+            return open(allFiles.list[0].path, done)
+        }
+
+        return done(false)
     }
 
     function scrollToFit() {
@@ -228,9 +236,12 @@
             $('#files').append(file)
         }
 
-        openRecent(function (file) {
-            file || openReadme()
-        })
+        (function openQueue(queue) {
+            var fn = queue.shift()
+            fn && fn(function (flag) {
+                flag || openQueue(queue)
+            })
+        })([openRecent, openReadme, openFirst])
     })
 
     $('#switch').click(function () {
