@@ -13,7 +13,6 @@ import (
 	"github.com/yuin/goldmark/renderer/html"
 	"io/ioutil"
 	"path"
-	"strings"
 )
 
 type HeadingIDs struct {
@@ -91,7 +90,7 @@ func markdownFilter(p string, output *bytes.Buffer) (ret string, e error) {
 		if isExternalLink(href) {
 			selection.SetAttr("target", "_blank")
 		} else {
-			selection.SetAttr("href", "/"+strings.TrimLeft(href, "/"))
+			selection.SetAttr("href", path.Clean("/"+href))
 		}
 	})
 

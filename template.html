@@ -143,19 +143,20 @@
             return done(false)
         }
 
-        isSwitch = file.path === currentFile.path
+        isSwitch = file.path !== currentFile.path
         currentFile = file
         localStorage.setItem('recent:' + allFiles.root, file.path)
 
         scrollToFit()
         $('#files li').removeClass('active')
         $('#files li[path="' + file.path + '"]').addClass('active')
+        history.pushState(null, '', file.path)
 
         $.post('/file', {
             path: file.path
         }, function (html) {
             $('#content').html(html)
-            isSwitch || $('#content').animate({scrollTop: 0}, 200)
+            isSwitch && $('#content').animate({scrollTop: 0}, 200)
             renderMathInElement($('#content').get(0), {
                 delimiters: [
                     {left: "\\[", right: "\\]", display: true},
@@ -168,7 +169,14 @@
     }
 
     function openRecent(done) {
-        open(localStorage.getItem('recent:' + allFiles.root), done)
+        var path
+        if (/\.md$/.test(location.pathname)) {
+            path = decodeURIComponent(location.pathname)
+        } else {
+            path = localStorage.getItem('recent:' + allFiles.root)
+        }
+
+        open(path, done)
     }
 
     function openReadme(done) {
