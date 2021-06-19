@@ -11,8 +11,10 @@ import (
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
+	"github.com/yuin/goldmark/util"
 	"io/ioutil"
 	"path"
+	"strings"
 )
 
 type HeadingIDs struct {
@@ -56,6 +58,9 @@ func markdownRender(source []byte) (ret *bytes.Buffer, e error) {
 		),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
+			parser.WithASTTransformers(util.Prioritized(&tocTransformer{
+				renderer: goldmark.DefaultRenderer(),
+			}, 10)),
 		),
 		goldmark.WithRendererOptions(
 			html.WithXHTML(),
@@ -63,12 +68,20 @@ func markdownRender(source []byte) (ret *bytes.Buffer, e error) {
 		),
 	)
 
-	context := parser.WithContext(
-		parser.NewContext(parser.WithIDs(&HeadingIDs{})),
-	)
+	context := parser.NewContext(parser.WithIDs(&HeadingIDs{}))
 
 	ret = new(bytes.Buffer)
-	e = md.Convert(source, ret, context)
+	if e = md.Convert(source, ret, parser.WithContext(context)); e != nil {
+		return
+	}
+
+	retBytes := ret.Bytes()
+	if bytes.Contains(retBytes, []byte(":toc:")) {
+		tocHTML := context.Get(tocResult).(*tocBuilder).Build(2, 5)
+		ret.Reset()
+		ret.Write(bytes.ReplaceAll(retBytes, []byte(":toc:"), []byte(tocHTML)))
+	}
+
 	return
 }
 
@@ -89,7 +102,7 @@ func markdownFilter(p string, output *bytes.Buffer) (ret string, e error) {
 
 		if isExternalLink(href) {
 			selection.SetAttr("target", "_blank")
-		} else {
+		} else if !strings.HasPrefix(href, "#") {
 			selection.SetAttr("href", path.Clean("/"+href))
 		}
 	})

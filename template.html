@@ -150,7 +150,9 @@
         scrollToFit()
         $('#files li').removeClass('active')
         $('#files li[path="' + file.path + '"]').addClass('active')
-        history.pushState(null, '', file.path)
+        if (file.path !== decodeURIComponent(location.pathname)) {
+            history.pushState(null, '', file.path)
+        }
 
         $.post('/file', {
             path: file.path
@@ -255,6 +257,10 @@
 
     $('#files').on('click', 'li', function () {
         open($(this).attr('path'))
+    })
+
+    window.addEventListener('popstate', function () {
+        openRecent()
     })
 
     setTimeout(function watcher() {
