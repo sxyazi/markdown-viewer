@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/litao91/goldmark-mathjax"
 	"github.com/yuin/goldmark"
@@ -105,6 +106,13 @@ func markdownFilter(p string, output *bytes.Buffer) (ret string, e error) {
 		} else if !strings.HasPrefix(href, "#") {
 			selection.SetAttr("href", path.Clean("/"+href))
 		}
+	})
+
+	doc.Find("h1,h2,h3,h4,h5,h6").Each(func(i int, selection *goquery.Selection) {
+		htm, _ := selection.Html()
+		id, _ := selection.Attr("id")
+		selection.AddClass("heading")
+		selection.SetHtml(fmt.Sprintf("<a class=\"heading-anchor\" href=\"#%s\">#</a>%s", htm, id))
 	})
 
 	return doc.Html()

@@ -92,6 +92,27 @@
         #content pre {
             border: 1px solid #eaecef;
         }
+
+        #content .heading {
+            position: relative;
+        }
+
+        #content .heading-anchor {
+            visibility: hidden;
+            position: absolute;
+            transform: translate(-100%);
+            padding-right: 3px;
+            --tw-text-opacity: 1;
+            color: rgba(16, 185, 129, var(--tw-text-opacity));
+        }
+
+        #content h1.heading .heading-anchor {
+            display: none;
+        }
+
+        #content .heading:hover .heading-anchor {
+            visibility: visible;
+        }
     </style>
 </head>
 <body class="w-screen h-screen flex overflow-hidden">
@@ -108,7 +129,7 @@
 </aside>
 
 <section class="w-full relative flex flex-col items-stretch">
-    <article id="content" class="px-10 py-7 overflow-auto markdown-body"></article>
+    <article id="content" class="px-12 md:px-14 lg:px-16 py-7 overflow-auto markdown-body"></article>
 </section>
 </body>
 
@@ -165,6 +186,7 @@
                     {left: "\\(", right: "\\)", display: false}
                 ]
             })
+            $('.heading[id="' + decodeURIComponent(location.hash.substr(1)) + '"] .heading-anchor').click()
 
             done && done(file)
         })
@@ -259,8 +281,45 @@
         open($(this).attr('path'))
     })
 
+    $('#content').on('click', '.heading-anchor', function () {
+        var contentElem = $('#content')
+        contentElem.animate({scrollTop: contentElem.scrollTop() + $(this).offset().top}, 200)
+
+        var hash = '#' + decodeURIComponent($(this).parent().attr('id'))
+        if (location.hash !== hash) {
+            location.hash = hash
+        }
+
+        return false
+    })
+
+    $('#content').scroll(function () {
+        var timer
+        return function () {
+            clearTimeout(timer)
+            timer = setTimeout(function () {
+                var contentElem = $('#content').get(0)
+                var headingElems = $('#content .heading')
+                if (contentElem.scrollTop === contentElem.scrollHeight - contentElem.offsetHeight) {
+                    return history.pushState(null, '', currentFile.path + '#' + headingElems.last().attr('id'))
+                }
+
+                for (var i = 0, lastElem = headingElems.first(); i < headingElems.length; i++) {
+                    if (headingElems.eq(i).position().top > 0) {
+                        history.pushState(null, '', currentFile.path + '#' + lastElem.attr('id'))
+                        break
+                    }
+
+                    lastElem = headingElems.eq(i)
+                }
+            }, 300)
+        }
+    }())
+
     window.addEventListener('popstate', function () {
-        openRecent()
+        if (currentFile.path !== decodeURIComponent(location.pathname)) {
+            openRecent()
+        }
     })
 
     setTimeout(function watcher() {
