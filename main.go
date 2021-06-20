@@ -32,6 +32,7 @@ func stat(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	fmt.Fprint(w, jsonEncode(resp))
 }
 
@@ -41,10 +42,12 @@ func file(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	fmt.Fprint(w, html)
 }
 
 func files(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	fmt.Fprint(w, jsonEncode(getFiles(store.workingPath)))
 }
 

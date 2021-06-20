@@ -5,13 +5,13 @@ import (
 	"os"
 )
 
-var TEMPLATE = ""
-
 func newTemplate() string {
-	if _, err := os.Stat("template.html"); err == nil {
-		code, _ := ioutil.ReadFile("template.html")
+	if _, err := os.Stat(store.workingPath + "/_template.html"); err == nil {
+		code, _ := ioutil.ReadFile(store.workingPath + "/_template.html")
 		return string(code)
 	}
 
-	return TEMPLATE
+	indexBytes, _ := Asset("ui/dist/index.html")
+	builtBytes, _ := Asset("ui/dist/built.js")
+	return string(indexBytes) + "<script>" + string(builtBytes) + "</script>"
 }

@@ -44,7 +44,11 @@ func getFiles(root string) (files Files) {
 
 func getArgument() string {
 	if len(os.Args) < 2 {
-		panic("Please pass at least one parameter")
+		panic("Please pass at least one parameters")
+	}
+
+	if _, e := os.Stat(os.Args[1]); e != nil {
+		panic("The working path does not exist")
 	}
 
 	return os.Args[1]
