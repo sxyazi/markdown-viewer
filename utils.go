@@ -47,11 +47,12 @@ func getArgument() string {
 		panic("Please pass at least one parameters")
 	}
 
-	if _, e := os.Stat(os.Args[1]); e != nil {
+	arg := bothSlash(os.Args[1])
+	if _, e := os.Stat(arg); e != nil {
 		panic("The working path does not exist")
 	}
 
-	return os.Args[1]
+	return arg
 }
 
 func isIgnored(p string) bool {

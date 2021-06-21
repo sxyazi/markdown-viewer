@@ -9,95 +9,87 @@ aside {
 
 aside.fold {
   max-width: 16px;
-  border-style: dashed;
-}
+  @apply border-dashed;
 
-aside.fold span {
-  --tw-rotate: -90deg;
-}
+  span {
+    @apply -rotate-90;
+  }
 
-aside.fold h3, aside.fold ul {
-  display: none;
+  h3, ul {
+    @apply hidden;
+  }
 }
 
 aside.unfold {
   min-width: 300px;
-  max-width: none;
-  border-style: solid;
+  @apply max-w-none border-solid;
+
+  span {
+    @apply rotate-90;
+  }
+
+  h3, ul {
+    @apply flex;
+  }
 }
 
-aside.unfold span {
-  --tw-rotate: 90deg;
+#files li {
+  &::before {
+    content: '';
+    @apply inline-block align-middle w-1 h-1 rounded bg-gray-500 -ml-2.5 mr-2.5;
+  }
+
+  &:hover::before {
+    @apply bg-green-500;
+  }
+
+  &.active {
+    @apply text-green-500;
+
+    &::before {
+      @apply bg-green-500;
+    }
+  }
 }
 
-aside.unfold h3, aside.unfold ul {
-  display: flex;
-}
+#content {
+  img {
+    @apply inline-block;
+  }
 
-#files li::before {
-  content: '';
-  display: inline-block;
-  width: 4px;
-  height: 4px;
-  background: rgba(107, 114, 128, var(--tw-text-opacity));
-  border-radius: 2px;
-  vertical-align: middle;
-  margin-left: -10px;
-  margin-right: 10px;
-}
+  pre {
+    @apply border border-gray-200;
+  }
 
-#files li.active {
-  --tw-text-opacity: 1;
-  color: rgba(16, 185, 129, var(--tw-text-opacity));
-}
+  li {
+    @apply list-disc;
 
-#files li.active::before {
-  background: rgba(16, 185, 129, var(--tw-text-opacity));
-}
+    p {
+      @apply inline-block;
+    }
+  }
 
-#content li {
-  list-style: inside;
-}
+  * + h1 {
+    @apply mt-12;
+  }
 
-#content li p {
-  display: inline-block;
-}
+  h1 {
+    @apply text-center border-b-0 mb-12;
 
-#content h1 {
-  text-align: center;
-  margin-bottom: 50px;
-  border-bottom: none;
-}
+    .heading-anchor {
+      @apply hidden;
+    }
+  }
 
-#content * + h1 {
-  margin-top: 50px;
-}
+  .heading {
+    @apply relative;
 
-#content img {
-  display: inline-block;
-}
+    &:hover .heading-anchor {
+      @apply opacity-100;
+    }
+  }
 
-#content pre {
-  border: 1px solid #eaecef;
-}
-
-#content .heading {
-  position: relative;
-}
-
-#content .heading-anchor {
-  visibility: hidden;
-  position: absolute;
-  transform: translate(-100%);
-  padding-right: 3px;
-  --tw-text-opacity: 1;
-  color: rgba(16, 185, 129, var(--tw-text-opacity));
-}
-
-#content h1.heading .heading-anchor {
-  display: none;
-}
-
-#content .heading:hover .heading-anchor {
-  visibility: visible;
+  .heading-anchor {
+    @apply pr-1 absolute text-green-500 opacity-0 transform -translate-x-full;
+  }
 }

@@ -37,7 +37,7 @@ func stat(w http.ResponseWriter, req *http.Request) {
 }
 
 func file(w http.ResponseWriter, req *http.Request) {
-	html, err := markdown(path.Clean(store.workingPath + "/" + req.FormValue("path")))
+	html, err := markdown(path.Clean(store.workingPath + leftSlash(req.FormValue("path"))))
 	if err != nil {
 		return
 	}
@@ -52,7 +52,7 @@ func files(w http.ResponseWriter, req *http.Request) {
 }
 
 func forward(w http.ResponseWriter, req *http.Request) {
-	p := store.workingPath + req.URL.Query().Get("path")
+	p := store.workingPath + leftSlash(req.URL.Query().Get("path"))
 
 	if _, err := os.Stat(p); err != nil {
 		w.WriteHeader(http.StatusNotFound)
