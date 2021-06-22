@@ -29,7 +29,7 @@ func getFiles(root string) (files Files) {
 		}
 
 		files.List = append(files.List, &File{
-			Name:      info.Name(),
+			Name:      baseWithoutExt(p),
 			Path:      path.Clean("/" + p[rootPathLength:]),
 			Size:      info.Size(),
 			Exists:    true,
@@ -124,6 +124,14 @@ func fileExistsDeep(root string, directory string, filename string) bool {
 	}
 
 	return false
+}
+
+func baseWithoutExt(p string) string {
+	base := path.Base(p)
+	if pos := strings.LastIndexByte(base, '.'); pos != -1 {
+		return base[:pos]
+	}
+	return base
 }
 
 func isExternalLink(link string) bool {

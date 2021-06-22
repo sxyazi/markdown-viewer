@@ -93,6 +93,11 @@ function openFirst(done) {
     return done(false)
 }
 
+function atBottom() {
+    var contentElem = $('#content').get(0)
+    return Math.abs(contentElem.scrollTop - (contentElem.scrollHeight - contentElem.offsetHeight)) < 3
+}
+
 function scrollToFit() {
     var filesElem = $('#files')
     var fileElem = filesElem.find('li[path="' + currentFile.path + '"]')
@@ -165,9 +170,8 @@ $('#content').scroll(function () {
     return function () {
         clearTimeout(timer)
         timer = setTimeout(function () {
-            var contentElem = $('#content').get(0)
             var headingElems = $('#content .heading')
-            if (contentElem.scrollTop === contentElem.scrollHeight - contentElem.offsetHeight) {
+            if (atBottom()) {
                 return history.pushState(null, '', currentFile.path + '#' + headingElems.last().attr('id'))
             }
 

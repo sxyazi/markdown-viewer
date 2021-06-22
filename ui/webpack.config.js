@@ -19,6 +19,7 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin({
+            dry: process.env.NODE_ENV !== 'production',
             protectWebpackAssets: false,
             cleanAfterEveryBuildPatterns: ['*.LICENSE.txt']
         }),

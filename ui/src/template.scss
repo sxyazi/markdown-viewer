@@ -4,7 +4,7 @@ body {
 
 aside {
   min-width: 16px;
-  max-width: 16px;
+  max-width: 300px;
 }
 
 aside.fold {
@@ -22,7 +22,7 @@ aside.fold {
 
 aside.unfold {
   min-width: 300px;
-  @apply max-w-none border-solid;
+  @apply border-solid;
 
   span {
     @apply rotate-90;

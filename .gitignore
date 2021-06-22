@@ -1,3 +1,5 @@
 .DS_Store
 .idea/
 ui/node_modules
+**/dist
+bindata.go
