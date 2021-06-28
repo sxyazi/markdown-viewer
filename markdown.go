@@ -7,7 +7,7 @@ import (
 	"github.com/litao91/goldmark-mathjax"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark-highlighting"
-	"github.com/yuin/goldmark-meta"
+	goldmarkMeta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
@@ -51,7 +51,7 @@ func markdownRender(source []byte) (ret *bytes.Buffer, e error) {
 			extension.Footnote,
 			extension.Strikethrough,
 
-			meta.Meta,
+			goldmarkMeta.Meta,
 			mathjax.MathJax,
 			highlighting.NewHighlighting(
 				highlighting.WithStyle("github"),

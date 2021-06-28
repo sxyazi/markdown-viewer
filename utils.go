@@ -89,6 +89,7 @@ func jsonEncode(value interface{}) string {
 func contentType(filename string) string {
 	switch path.Ext(strings.ToLower(filename)) {
 	case ".jpg":
+		fallthrough
 	case ".jpeg":
 		return "image/jpeg"
 	case ".png":

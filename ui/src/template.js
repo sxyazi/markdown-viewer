@@ -38,6 +38,9 @@ function open(path, done) {
         path: file.path
     }, function (html) {
         $('#content').html(html)
+        $('#table-of-contents > ul').appendTo($('#outline').empty())
+        $('#table-of-contents').remove()
+
         isSwitch && $('#content').animate({scrollTop: 0}, 200)
         renderMathInElement($('#content').get(0), {
             delimiters: [
@@ -151,6 +154,12 @@ $('#switch').click(function () {
 
 $('#files').on('click', 'li', function () {
     open($(this).attr('path'))
+})
+
+$('#outline').click(function (e) {
+    if (this === e.target) {
+        $(this).toggleClass('active')
+    }
 })
 
 $('#content').on('click', '.heading-anchor', function () {

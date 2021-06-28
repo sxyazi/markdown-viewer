@@ -18,6 +18,9 @@ type Files struct {
 	List []*File `json:"list"`
 }
 
+type meta struct {
+}
+
 type tocHeader struct {
 	ID       string
 	Text     string

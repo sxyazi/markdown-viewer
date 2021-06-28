@@ -15,7 +15,7 @@ aside.fold {
     @apply -rotate-90;
   }
 
-  h3, ul {
+  h3, #files, #outline {
     @apply hidden;
   }
 }
@@ -28,7 +28,7 @@ aside.unfold {
     @apply rotate-90;
   }
 
-  h3, ul {
+  h3, #files, #outline {
     @apply flex;
   }
 }
@@ -49,6 +49,47 @@ aside.unfold {
     &::before {
       @apply bg-green-500;
     }
+  }
+}
+
+#outline {
+  @apply w-full h-8 absolute bottom-0 text-sm text-gray-500 bg-white overflow-hidden;
+
+  &.active {
+    @apply h-3/5 relative;
+  }
+
+  &::before {
+    content: 'OUTLINE';
+    @apply w-full h-full py-2 px-4 z-10 block bg-white text-xs border-t border-gray-100 text-gray-400 tracking-wider cursor-pointer;
+  }
+
+  &.active::before {
+    @apply h-auto;
+  }
+}
+
+#outline > ul {
+  @apply w-full h-full px-5 leading-8 overflow-auto;
+
+  a {
+    @apply block hover:text-green-500;
+  }
+
+  ul {
+    @apply pl-5 border-l border-gray-200;
+  }
+
+  & > li > a {
+    @apply text-gray-600;
+  }
+
+  & > li:first-child {
+    @apply pt-2;
+  }
+
+  & > li:last-child {
+    @apply pb-4;
   }
 }
 
