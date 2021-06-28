@@ -64,6 +64,7 @@ func markdownRender(source []byte) (ret *bytes.Buffer, e error) {
 			}, 10)),
 		),
 		goldmark.WithRendererOptions(
+			html.WithHardWraps(),
 			html.WithXHTML(),
 			html.WithUnsafe(),
 		),
