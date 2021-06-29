@@ -1,5 +1,5 @@
 import $ from 'jquery'
-import renderMathInElement from 'katex/dist/contrib/auto-render'
+import katex from 'katex/dist/katex'
 
 var allFiles = {}
 var currentFile = {}
@@ -42,12 +42,7 @@ function open(path, done) {
         $('#table-of-contents').remove()
 
         isSwitch && $('#content').animate({scrollTop: 0}, 200)
-        renderMathInElement($('#content').get(0), {
-            delimiters: [
-                {left: "\\[", right: "\\]", display: true},
-                {left: "\\(", right: "\\)", display: false}
-            ]
-        })
+        renderMath()
         $('.heading[id="' + decodeURIComponent(location.hash.substr(1)) + '"] .heading-anchor').click()
 
         done && done(file)
@@ -108,6 +103,24 @@ function scrollToFit() {
 
     if (scrollTop > filesElem.scrollTop() + filesElem.height()) {
         filesElem.animate({scrollTop: scrollTop}, 200)
+    }
+}
+
+function renderMath() {
+    for (var i = 0, elems = $('#content .math'); i < elems.length; i++) {
+        var math = elems[i].innerText
+        var displayMode = elems[i].className.indexOf('display') != -1
+
+        if (displayMode) {
+            math = math.substr(2, math.length - 5)
+        } else {
+            math = math.substr(2, math.length - 4)
+        }
+
+        katex.render(math, elems[i], {
+            throwOnError: false,
+            displayMode: displayMode
+        })
     }
 }
 
