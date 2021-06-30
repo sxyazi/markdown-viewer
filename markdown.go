@@ -109,6 +109,12 @@ func markdownFilter(p string, output *bytes.Buffer) (ret string, e error) {
 		}
 	})
 
+	doc.Find("details").Each(func(i int, selection *goquery.Selection) {
+		if selection.Find("summary").Length() < 1 {
+			selection.PrependHtml("<summary>Details</summary>")
+		}
+	})
+
 	doc.Find("h1,h2,h3,h4,h5,h6").Each(func(i int, selection *goquery.Selection) {
 		htm, _ := selection.Html()
 		id, _ := selection.Attr("id")

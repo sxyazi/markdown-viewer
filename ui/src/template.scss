@@ -102,6 +102,12 @@ aside.unfold {
     @apply border border-gray-200;
   }
 
+  ul {
+    ul {
+      margin-bottom: 16px;
+    }
+  }
+
   li {
     @apply list-disc;
 
@@ -132,5 +138,17 @@ aside.unfold {
 
   .heading-anchor {
     @apply pr-1 absolute text-green-500 opacity-0 transform -translate-x-full;
+  }
+
+  details {
+    @apply text-sm;
+
+    summary {
+      @apply mb-2;
+    }
+
+    &[open] {
+      @apply px-2.5 py-2 border border-dashed border-gray-200;
+    }
   }
 }
