@@ -1,5 +1,8 @@
 body {
-  font-family: Roboto, sans-serif;
+  letter-spacing: .2px;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 aside {
@@ -44,7 +47,7 @@ aside.unfold {
   }
 
   &.active {
-    @apply text-green-500;
+    @apply text-green-600;
 
     &::before {
       @apply bg-green-500;
@@ -53,7 +56,7 @@ aside.unfold {
 }
 
 #outline {
-  @apply w-full h-8 absolute bottom-0 text-sm text-gray-500 bg-white overflow-hidden;
+  @apply w-full h-8 absolute bottom-0 text-sm text-gray-600 bg-white overflow-hidden;
 
   &.active {
     @apply h-3/5 relative;
@@ -73,7 +76,7 @@ aside.unfold {
   @apply w-full h-full px-5 leading-8 overflow-auto;
 
   a {
-    @apply block hover:text-green-500;
+    @apply block hover:text-green-600;
   }
 
   ul {
@@ -81,7 +84,7 @@ aside.unfold {
   }
 
   & > li > a {
-    @apply text-gray-600;
+    @apply text-gray-700;
   }
 
   & > li:first-child {
@@ -94,6 +97,8 @@ aside.unfold {
 }
 
 #content {
+  color: #2c3e50;
+
   img {
     @apply inline-block;
   }
@@ -137,7 +142,11 @@ aside.unfold {
   }
 
   .heading-anchor {
-    @apply pr-1 absolute text-green-500 opacity-0 transform -translate-x-full;
+    @apply pr-1 absolute text-green-600 opacity-0 transform -translate-x-full;
+  }
+
+  strong {
+    font-weight: 500;
   }
 
   details {
@@ -148,7 +157,17 @@ aside.unfold {
     }
 
     &[open] {
-      @apply px-2.5 py-2 border border-dashed border-gray-200;
+      @apply px-3 py-3 relative border border-dashed border-gray-200;
+
+      summary {
+        font-size: 0;
+        @apply inline absolute top-1 right-2;
+      }
+
+      summary::before {
+        content: '\00D7';
+        @apply text-xl text-gray-400;
+      }
     }
   }
 }
