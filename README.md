@@ -6,7 +6,7 @@ It supports code highlighting and math formulas and other features optimized for
 
 ## Usage
 
-Download the version for your system from the Releases page, then run it as follows.
+Download the version for your system from the [Releases](https://github.com/sxyazi/markdown-viewer/releases) page, then run it as follows.
 
 ```bash
 ./markdown-viewer <path>
