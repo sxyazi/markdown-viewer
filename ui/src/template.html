@@ -1,4 +1,4 @@
-<aside class="lg:w-2/6 h-full flex flex-col absolute lg:relative z-10 bg-white border-r border-dashed lg:border-solid border-gray-100">
+<aside class="lg:w-2/6 h-full flex flex-col absolute z-10 bg-white border-r border-dashed lg:border-solid border-gray-100">
     <h3 class="ml-7 mt-8 mb-5 hidden lg:flex font-bold text-2xl text-gray-600">Files</h3>
     <ul id="files" class="px-7 pb-7 hidden lg:flex flex-col text-sm overflow-auto text-gray-700"></ul>
     <nav id="outline" class="hidden lg:flex flex-col"></nav>
@@ -11,8 +11,8 @@
     </span>
 </aside>
 
-<section class="w-full relative flex flex-col items-stretch">
-    <article id="content" class="px-12 md:px-14 lg:px-16 py-7 overflow-auto markdown-body"></article>
+<section id="main" class="w-full overflow-auto">
+    <article id="content" class="w-full px-12 md:px-14 lg:px-16 py-7 overflow-auto markdown-body"></article>
 </section>
 
 <script id="file-template" type="text/html">

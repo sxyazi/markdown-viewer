@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/alecthomas/chroma"
+	"github.com/alecthomas/chroma/styles"
 	"github.com/litao91/goldmark-mathjax"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark-highlighting"
-	goldmarkMeta "github.com/yuin/goldmark-meta"
+	goldmarkmeta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
@@ -43,33 +45,7 @@ func markdown(p string) (ret string, e error) {
 }
 
 func markdownRender(source []byte) (ret *bytes.Buffer, e error) {
-	md := goldmark.New(
-		goldmark.WithExtensions(
-			extension.GFM,
-			extension.Table,
-			extension.TaskList,
-			extension.Footnote,
-			extension.Strikethrough,
-
-			goldmarkMeta.Meta,
-			mathjax.MathJax,
-			highlighting.NewHighlighting(
-				highlighting.WithStyle("github"),
-			),
-		),
-		goldmark.WithParserOptions(
-			parser.WithAutoHeadingID(),
-			parser.WithASTTransformers(util.Prioritized(&tocTransformer{
-				renderer: goldmark.DefaultRenderer(),
-			}, 10)),
-		),
-		goldmark.WithRendererOptions(
-			html.WithHardWraps(),
-			html.WithXHTML(),
-			html.WithUnsafe(),
-		),
-	)
-
+	md := markdownInstance()
 	source = simplifyCodeBlock(source)
 	context := parser.NewContext(parser.WithIDs(&HeadingIDs{}))
 
@@ -124,4 +100,38 @@ func markdownFilter(p string, output *bytes.Buffer) (ret string, e error) {
 	})
 
 	return doc.Html()
+}
+
+func markdownInstance() goldmark.Markdown {
+	builder := styles.Get("github").Builder()
+	builder.Add(chroma.LineHighlight, "bg:#f7f7f7")
+
+	style, _ := builder.Build()
+
+	return goldmark.New(
+		goldmark.WithExtensions(
+			extension.GFM,
+			extension.Table,
+			extension.TaskList,
+			extension.Footnote,
+			extension.Strikethrough,
+
+			goldmarkmeta.Meta,
+			mathjax.MathJax,
+			highlighting.NewHighlighting(
+				highlighting.WithCustomStyle(style),
+			),
+		),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+			parser.WithASTTransformers(util.Prioritized(&tocTransformer{
+				renderer: goldmark.DefaultRenderer(),
+			}, 10)),
+		),
+		goldmark.WithRendererOptions(
+			html.WithHardWraps(),
+			html.WithXHTML(),
+			html.WithUnsafe(),
+		),
+	)
 }

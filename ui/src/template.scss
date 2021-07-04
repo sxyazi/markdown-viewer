@@ -8,11 +8,21 @@ body {
 aside {
   min-width: 16px;
   max-width: 300px;
+
+  & + #main {
+    @media (min-width: 1024px) {
+      margin-left: min(300px, 33.333333%);
+    }
+  }
 }
 
 aside.fold {
   max-width: 16px;
   @apply border-dashed;
+
+  & + #main {
+    margin-left: 0;
+  }
 
   span {
     @apply -rotate-90;
@@ -26,6 +36,14 @@ aside.fold {
 aside.unfold {
   min-width: 300px;
   @apply border-solid;
+
+  & + #main {
+    margin-left: 0;
+
+    @media (min-width: 1024px) {
+      margin-left: min(300px, 33.333333%);
+    }
+  }
 
   span {
     @apply rotate-90;
@@ -104,7 +122,7 @@ aside.unfold {
   }
 
   pre {
-    @apply border border-gray-200;
+    @apply border border-gray-200 break-all break-words whitespace-pre-wrap;
   }
 
   ul {
