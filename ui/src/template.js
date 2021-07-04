@@ -194,7 +194,8 @@ $('#content').scroll(function () {
         timer = setTimeout(function () {
             var headingElems = $('#content .heading')
             if (atBottom()) {
-                return history.pushState(null, '', currentFile.path + '#' + headingElems.last().attr('id'))
+                var id = headingElems.last().attr('id')
+                return id && history.pushState(null, '', currentFile.path + '#' + id)
             }
 
             for (var i = 0, lastElem = headingElems.first(); i < headingElems.length; i++) {
