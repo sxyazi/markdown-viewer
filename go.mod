@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/PuerkitoBio/goquery v1.7.0
-	github.com/alecthomas/chroma v0.9.2 // indirect
+	github.com/alecthomas/chroma v0.9.2
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/litao91/goldmark-mathjax v0.0.0-20210217064022-a43cf739a50f
 	github.com/yuin/goldmark v1.3.9
