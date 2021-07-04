@@ -70,6 +70,7 @@ func markdownRender(source []byte) (ret *bytes.Buffer, e error) {
 		),
 	)
 
+	source = simplifyCodeBlock(source)
 	context := parser.NewContext(parser.WithIDs(&HeadingIDs{}))
 
 	ret = new(bytes.Buffer)

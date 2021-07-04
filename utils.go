@@ -147,3 +147,18 @@ func forwardResource(parent, src string) string {
 
 	return "/forward?path=" + url.QueryEscape(leftSlash(path.Join(parent, src)[len(store.workingPath):]))
 }
+
+func simplifyCodeBlock(source []byte) []byte {
+	r := regexp.MustCompile("(```[a-z]+)\\s*\\{([0-9,\\-]+)\\}")
+
+	return r.ReplaceAllFunc(source, func(b []byte) []byte {
+		lines := strings.Split(string(r.ReplaceAll(b, []byte("$2"))), ",")
+		for i, line := range lines {
+			if strings.Contains(line, "-") {
+				lines[i] = `"` + line + `"`
+			}
+		}
+
+		return r.ReplaceAll(b, []byte(`$1 {hl_lines=[`+strings.Join(lines, ",")+`]}`))
+	})
+}
