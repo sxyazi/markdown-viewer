@@ -122,7 +122,11 @@ aside.unfold {
   }
 
   pre {
-    @apply border border-gray-200 break-all break-words whitespace-pre-wrap;
+    @apply border border-gray-200 cursor-text break-all break-words whitespace-pre-wrap;
+
+    &:focus {
+      outline: 1px auto #e59700;
+    }
   }
 
   ul {
@@ -139,16 +143,16 @@ aside.unfold {
     }
   }
 
-  * + h1 {
-    @apply mt-12;
-  }
-
   h1 {
     @apply text-center border-b-0 mb-12;
 
     .heading-anchor {
       @apply hidden;
     }
+  }
+
+  * + h1 {
+    @apply mt-12;
   }
 
   .heading {
@@ -163,6 +167,11 @@ aside.unfold {
     @apply pr-1 absolute text-green-600 opacity-0 transform -translate-x-full;
   }
 
+  .math.inline {
+    @apply my-0.5 inline-block;
+  }
+
+  b,
   strong {
     font-weight: 500;
   }
@@ -174,12 +183,20 @@ aside.unfold {
       @apply mb-2;
     }
 
+    summary p {
+      display: inline;
+    }
+
+    & > :last-child {
+      margin-bottom: 0;
+    }
+
     &[open] {
       @apply px-3 py-3 relative border border-dashed border-gray-200;
 
       summary {
         font-size: 0;
-        @apply inline absolute top-1 right-2;
+        @apply inline absolute top-1 right-2 bg-white outline-none;
       }
 
       summary::before {

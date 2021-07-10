@@ -110,7 +110,13 @@ func (t *tocTransformer) Transform(node *ast.Document, reader text.Reader, conte
 				header.ID = string(id.([]byte))
 			}
 
-		default:
+		case
+			ast.KindText,
+			ast.KindString,
+			ast.KindLink,
+			ast.KindEmphasis,
+			ast.KindCodeSpan:
+
 			ret = ast.WalkSkipChildren
 			e = t.renderer.Render(buffer, reader.Source(), n)
 		}
