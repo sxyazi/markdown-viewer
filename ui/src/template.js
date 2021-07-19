@@ -1,8 +1,10 @@
 import $ from 'jquery'
 import katex from 'katex/dist/katex'
+import {cancelToRespond, respondToVisible} from './utils'
 
 var allFiles = {}
 var currentFile = {}
+var mathElements = {}
 var fileTemplate = $('#file-template').html()
 
 function open(path, done) {
@@ -42,8 +44,8 @@ function open(path, done) {
         $('#table-of-contents').remove()
 
         isSwitch && $('#content').animate({scrollTop: 0}, 200)
-        renderMath()
-        $('.heading[id="' + decodeURIComponent(location.hash.substr(1)) + '"] .heading-anchor').click()
+        isSwitch && $('.heading[id="' + decodeURIComponent(location.hash.substr(1)) + '"] .heading-anchor').click()
+        renderMathAsync()
 
         done && done(file)
     })
@@ -106,21 +108,35 @@ function scrollToFit() {
     }
 }
 
-function renderMath() {
+function renderMath(element) {
+    cancelToRespond(element)
+
+    var $e = $(element)
+    var text = element.innerText
+    var displayMode = element.classList.contains('display')
+
+    if (mathElements[text]) {
+        return $e.replaceWith(mathElements[text].clone())
+    }
+
+    if (displayMode) {
+        var math = text.substr(2, text.length - 5)
+    } else {
+        var math = text.substr(2, text.length - 4)
+    }
+
+    $e.addClass('rendered')
+    katex.render(math, element, {
+        throwOnError: false,
+        displayMode: displayMode
+    })
+
+    mathElements[text] = $e.clone()
+}
+
+function renderMathAsync() {
     for (var i = 0, elems = $('#content .math'); i < elems.length; i++) {
-        var math = elems[i].innerText
-        var displayMode = elems[i].className.indexOf('display') != -1
-
-        if (displayMode) {
-            math = math.substr(2, math.length - 5)
-        } else {
-            math = math.substr(2, math.length - 4)
-        }
-
-        katex.render(math, elems[i], {
-            throwOnError: false,
-            displayMode: displayMode
-        })
+        respondToVisible(elems[i], renderMath)
     }
 }
 

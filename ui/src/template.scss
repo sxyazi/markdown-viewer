@@ -167,8 +167,16 @@ aside.unfold {
     @apply pr-1 absolute text-green-600 opacity-0 transform -translate-x-full;
   }
 
-  .math.inline {
-    @apply my-0.5 inline-block;
+  .math {
+    @apply opacity-0;
+
+    &.rendered {
+      @apply opacity-100;
+    }
+
+    &.inline {
+      @apply my-0.5 inline-block;
+    }
   }
 
   b,

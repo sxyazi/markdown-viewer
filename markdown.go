@@ -21,10 +21,11 @@ import (
 )
 
 type HeadingIDs struct {
+	times map[string]int
 }
 
 func (s *HeadingIDs) Generate(value []byte, kind ast.NodeKind) []byte {
-	return value
+	return distinct(value, s.times)
 }
 
 func (s *HeadingIDs) Put(value []byte) {
@@ -47,7 +48,7 @@ func markdown(p string) (ret string, e error) {
 func markdownRender(source []byte) (ret *bytes.Buffer, e error) {
 	md := markdownInstance()
 	source = simplifyCodeBlock(source)
-	context := parser.NewContext(parser.WithIDs(&HeadingIDs{}))
+	context := parser.NewContext(parser.WithIDs(&HeadingIDs{times: map[string]int{}}))
 
 	ret = new(bytes.Buffer)
 	if e = md.Convert(source, ret, parser.WithContext(context)); e != nil {
@@ -107,7 +108,7 @@ func markdownFilter(p string, output *bytes.Buffer) (ret string, e error) {
 		htm, _ := selection.Html()
 		id, _ := selection.Attr("id")
 		selection.AddClass("heading")
-		selection.SetHtml(fmt.Sprintf("<a class=\"heading-anchor\" href=\"#%s\">#</a>%s", htm, id))
+		selection.SetHtml(fmt.Sprintf("<a class=\"heading-anchor\" href=\"#%s\">#</a>%s", id, htm))
 	})
 
 	return doc.Html()

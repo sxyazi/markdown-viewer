@@ -8,6 +8,7 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -53,6 +54,17 @@ func getArgument() string {
 	}
 
 	return arg
+}
+
+func distinct(id []byte, records map[string]int) []byte {
+	_id := string(id)
+	if times, ok := records[_id]; ok {
+		records[_id] = times + 1
+		return []byte(_id + strconv.Itoa(records[_id]))
+	}
+
+	records[_id] = 1
+	return id
 }
 
 func isIgnored(p string) bool {
