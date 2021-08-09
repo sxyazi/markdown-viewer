@@ -8,12 +8,13 @@ module.exports = {
     entry: './src/app.js',
     output: {
         filename: 'built.js',
+        publicPath: '/',
         path: path.resolve(__dirname, 'dist')
     },
     module: {
         rules: [
             {test: /\.html$/, use: 'html-loader'},
-            {test: /\.(png|woff|woff2|eot|ttf|svg)$/, use: 'url-loader?limit=100000'},
+            {test: /\.(png|woff|woff2|eot|ttf|svg)$/, type: 'asset/inline'},
             {test: /\.s?css$/, use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']}
         ],
     },
