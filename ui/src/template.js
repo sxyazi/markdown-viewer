@@ -40,7 +40,9 @@ function open(path, done) {
         path: file.path
     }, function (html) {
         $('#content').html(html)
-        $('#table-of-contents > ul').appendTo($('#outline').empty())
+
+        var toc = $('#table-of-contents').html()
+        $('#outline').html() !== toc && $('#outline').html(toc)
         $('#table-of-contents').remove()
 
         isSwitch && $('#content').animate({scrollTop: 0}, 200)
@@ -110,28 +112,30 @@ function scrollToFit() {
 
 function renderMath(element) {
     cancelToRespond(element)
-
-    var $e = $(element)
-    var text = element.innerText
-    var displayMode = element.classList.contains('display')
-
-    if (mathElements[text]) {
-        return $e.replaceWith(mathElements[text].clone())
+    if (element.classList.contains('rendered')) {
+        return
+    } else {
+        element.classList.add('rendered')
     }
 
+    var text = element.innerText
+    if (mathElements[text]) {
+        return $(element).replaceWith(mathElements[text].cloneNode(true))
+    }
+
+    var displayMode = element.classList.contains('display')
     if (displayMode) {
         var math = text.substr(2, text.length - 5)
     } else {
         var math = text.substr(2, text.length - 4)
     }
 
-    $e.addClass('rendered')
     katex.render(math, element, {
         throwOnError: false,
         displayMode: displayMode
     })
 
-    mathElements[text] = $e.clone()
+    mathElements[text] = element.cloneNode(true)
 }
 
 function renderMathAsync() {

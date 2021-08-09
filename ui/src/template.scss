@@ -127,6 +127,12 @@ aside.unfold {
     &:focus {
       outline: 1px auto #e59700;
     }
+
+    & + pre {
+      margin-top: -18px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
   }
 
   ul {
