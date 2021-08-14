@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import katex from 'katex/dist/katex'
-import {cancelToRespond, respondToVisible} from './utils'
+import {cancelToRespond, copyElementText, respondToVisible, selectionText} from './utils'
 
 var allFiles = {}
 var currentFile = {}
@@ -131,8 +131,9 @@ function renderMath(element) {
     }
 
     katex.render(math, element, {
+        output: 'html',
         throwOnError: false,
-        displayMode: displayMode
+        displayMode: displayMode,
     })
 
     mathElements[text] = element.cloneNode(true)
@@ -205,6 +206,12 @@ $('#content').on('click', '.heading-anchor', function () {
     }
 
     return false
+})
+
+$('#content').on('dblclick', 'pre', function (e) {
+    if (selectionText() === '\n') {
+        return !copyElementText(this)
+    }
 })
 
 $('#content').scroll(function () {
