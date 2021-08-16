@@ -6,12 +6,20 @@ var observer = new IntersectionObserver(function (entries, observer) {
         if (entry.intersectionRatio > 0) {
             setTimeout(function () {
                 isInViewport(entry.target) && callback(entry.target)
-            }, 100)
+            }, 50)
         }
     })
 }, {
     root: document.documentElement
 })
+
+var debounce = function (call, timeout) {
+    var timer
+    return function () {
+        clearTimeout(timer)
+        timer = setTimeout(call.bind(this), timeout)
+    }
+}
 
 function respondToVisible(element, call) {
     callback = call
@@ -65,4 +73,4 @@ function copyElementText(element) {
     return true
 }
 
-export {respondToVisible, cancelToRespond, selectionText, copyElementText}
+export {debounce, respondToVisible, cancelToRespond, selectionText, copyElementText}

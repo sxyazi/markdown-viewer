@@ -183,11 +183,21 @@ aside.unfold {
     &.inline {
       @apply my-0.5 inline-block;
     }
+
+    &.display {
+      @apply block;
+    }
   }
 
   b,
   strong {
     font-weight: 500;
+  }
+
+  table {
+    th:empty {
+      display: none;
+    }
   }
 
   details {
