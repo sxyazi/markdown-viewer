@@ -45,7 +45,7 @@ export default class {
         }, (html) => {
             $('#content').html(html)
 
-            const toc = $('#table-of-contents').html()
+            const toc = $('#table-of-contents').html() || ''
             $('#outline').html() !== toc && $('#outline').html(toc)
             $('#table-of-contents').remove()
             Content.renderAsync()

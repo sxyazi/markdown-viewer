@@ -3,7 +3,7 @@ module.exports = {
         './src/**/*.html',
         './src/**/*.js'
     ],
-    darkMode: false,
+    darkMode: 'media',
     theme: {
         extend: {},
     },

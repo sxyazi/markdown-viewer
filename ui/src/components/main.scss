@@ -1,0 +1,259 @@
+body {
+  letter-spacing: .2px;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+aside {
+  min-width: 16px;
+  max-width: 300px;
+  @apply lg:w-2/6 h-full flex flex-col absolute z-10  border-r border-dashed lg:border-solid;
+  @apply bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-600;
+
+  & + #main {
+    @media (min-width: 1024px) {
+      margin-left: min(300px, 33.333333%);
+    }
+  }
+
+  h3 {
+    @apply ml-7 mt-8 mb-5 hidden lg:flex font-bold text-2xl text-gray-600 dark:text-gray-200;
+  }
+
+  #switch {
+    @apply w-5 h-5 absolute z-20 top-1/3 right-0 cursor-pointer transform duration-150
+    bg-white border rounded-full border-gray-100 translate-x-1/2 -rotate-90 lg:rotate-90 hover:scale-125;
+  }
+}
+
+aside.fold {
+  max-width: 16px;
+  @apply border-dashed;
+
+  & + #main {
+    margin-left: 0;
+  }
+
+  #switch {
+    @apply -rotate-90;
+  }
+
+  h3, #files, #outline {
+    @apply hidden;
+  }
+}
+
+aside.unfold {
+  min-width: 300px;
+  @apply border-solid;
+
+  & + #main {
+    margin-left: 0;
+
+    @media (min-width: 1024px) {
+      margin-left: min(300px, 33.333333%);
+    }
+  }
+
+  #switch {
+    @apply rotate-90;
+  }
+
+  h3, #files, #outline {
+    @apply flex;
+  }
+}
+
+#files {
+  @apply px-7 pb-7 hidden lg:flex flex-col text-sm overflow-auto text-gray-700 dark:text-gray-200;
+
+  li {
+    @apply py-3 pl-6 cursor-pointer hover:text-green-600 dark:hover:text-green-400;
+
+    &::before {
+      content: '';
+      @apply inline-block align-middle w-1 h-1 rounded bg-gray-500 dark:bg-gray-400 -ml-2.5 mr-2.5;
+    }
+
+    &:hover::before {
+      @apply bg-green-500 dark:bg-green-400;
+    }
+
+    &.active {
+      @apply text-green-600 dark:text-green-400;
+
+      &::before {
+        @apply bg-green-500 dark:bg-green-400;
+      }
+    }
+  }
+}
+
+#outline {
+  @apply w-full h-8 hidden lg:flex flex-col absolute bottom-0 text-sm overflow-hidden;
+
+  &.active {
+    @apply h-3/5 relative;
+  }
+
+  &::before {
+    content: 'OUTLINE';
+    @apply w-full h-full py-2 px-4 z-10 block text-xs border-t tracking-wider cursor-pointer;
+    @apply bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-400 border-gray-100 dark:border-gray-600;
+  }
+
+  &.active::before {
+    @apply h-auto;
+  }
+
+  & > ul {
+    @apply w-full h-full px-5 leading-8 overflow-auto;
+
+    a {
+      @apply block text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400;
+    }
+
+    ul {
+      @apply pl-5 border-l border-gray-200 dark:border-gray-600;
+    }
+
+    & > li > a {
+      @apply text-gray-700 dark:text-gray-200;
+    }
+
+    & > li:first-child {
+      @apply pt-2;
+    }
+
+    & > li:last-child {
+      @apply pb-4;
+    }
+  }
+}
+
+
+#main {
+  @apply w-full h-full overflow-x-auto;
+}
+
+#content {
+  color: #2c3e50;
+  @apply w-full h-full px-12 md:px-14 lg:px-16 py-7 overflow-auto;
+  @apply dark:bg-gray-800 dark:text-gray-200;
+
+  img {
+    @apply inline-block;
+  }
+
+  pre {
+    // TODO
+    @apply border border-gray-200 cursor-text break-all break-words whitespace-pre-wrap;
+
+    &:focus {
+      outline: 1px auto #e59700;
+    }
+
+    & + pre {
+      margin-top: -18px;
+      @apply rounded-t-none;
+    }
+  }
+
+  ul {
+    ul {
+      margin-bottom: 16px;
+    }
+  }
+
+  li {
+    @apply list-disc;
+
+    p {
+      @apply mt-0 mb-2;
+    }
+  }
+
+  h1 {
+    @apply text-center border-b-0 mb-12;
+
+    .heading-anchor {
+      @apply hidden;
+    }
+  }
+
+  * + h1 {
+    @apply mt-12;
+  }
+
+  .heading {
+    @apply relative;
+
+    &:hover .heading-anchor {
+      @apply opacity-100;
+    }
+  }
+
+  .heading-anchor {
+    @apply pr-1 absolute text-green-600 dark:text-green-400 opacity-0 transform -translate-x-full;
+  }
+
+  .math {
+    @apply opacity-0;
+
+    &.rendered {
+      @apply opacity-100;
+    }
+
+    &.inline {
+      @apply my-0.5 inline-block;
+    }
+
+    &.display {
+      @apply block;
+    }
+  }
+
+  b,
+  strong {
+    font-weight: 500;
+  }
+
+  table {
+    @apply overflow-visible;
+
+    th:empty {
+      @apply hidden;
+    }
+  }
+
+  details {
+    @apply text-sm;
+
+    summary {
+      @apply mb-2;
+    }
+
+    summary p {
+      @apply inline;
+    }
+
+    & > :last-child {
+      @apply mb-0;
+    }
+
+    &[open] {
+      @apply px-3 py-3 relative border border-dashed border-gray-200 dark:border-gray-600;
+
+      summary {
+        font-size: 0;
+        @apply inline absolute top-1 right-2 outline-none;
+      }
+
+      summary::before {
+        content: '\00D7';
+        @apply text-xl text-gray-400;
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@ $('#switch').click(() => {
         $aside.removeClass('unfold').addClass('fold')
     else
         $aside.removeClass('fold').addClass('unfold')
-   
+
     localStorage.setItem('ui:sidebar', $aside.hasClass('fold') ? 'inactive' : 'active')
 })
 
@@ -33,9 +33,8 @@ $.get(apiEndpoint('files'), function (files) {
         Store.allFiles = {}
     }
 
-    const fileTemplate = $('#file-template').html()
     for (let i = 0; i < Store.allFiles.list.length; i++) {
-        const file = $(fileTemplate)
+        const file = $('<li/>')
         file.text(Store.allFiles.list[i].name)
         file.attr('path', Store.allFiles.list[i].path)
         file.attr('title', Store.allFiles.list[i].path)
