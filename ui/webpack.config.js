@@ -2,14 +2,22 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const TerserWebpackPlugin = require('terser-webpack-plugin')
-const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin')
 
 module.exports = {
     entry: './src/app.js',
     output: {
         filename: 'built.js',
         publicPath: '/',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        environment: {
+            arrowFunction: false,
+            bigIntLiteral: false,
+            const: false,
+            destructuring: false,
+            dynamicImport: false,
+            forOf: false,
+            module: false
+        }
     },
     module: {
         rules: [
@@ -52,8 +60,7 @@ module.exports = {
     },
     optimization: {
         minimizer: [
-            new TerserWebpackPlugin(),
-            new CssMinimizerWebpackPlugin()
+            new TerserWebpackPlugin()
         ],
     }
 }
