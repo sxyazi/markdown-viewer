@@ -1,24 +1,35 @@
 import $ from 'jquery'
+import Store from '@/store'
 
-var callback
-var observer = new IntersectionObserver(function (entries, observer) {
-    entries.forEach(function (entry) {
-        if (entry.intersectionRatio > 0) {
-            setTimeout(function () {
-                isInViewport(entry.target) && callback(entry.target)
-            }, 50)
-        }
+let callback
+const observer = new IntersectionObserver(function (entries, observer) {
+    entries.forEach((entry) => {
+        if (entry.intersectionRatio > 0)
+            setTimeout(() => isInViewport(entry.target) && callback(entry.target), 50)
     })
 }, {
     root: document.documentElement
 })
 
-var debounce = function (call, timeout) {
-    var timer
-    return function () {
+function debounce(call, timeout) {
+    let timer
+    return () => {
         clearTimeout(timer)
         timer = setTimeout(call.bind(this), timeout)
     }
+}
+
+function scrollTo($e, top, time = 100) {
+    Store.scrolling = true
+    $e.animate({scrollTop: top}, time, () => setTimeout(() => Store.scrolling = false, 500))
+}
+
+function apiEndpoint(url) {
+    if (location.port === '3000') {
+        return `/${url}`
+    }
+
+    return `http://127.0.0.1:3000/${url}`
 }
 
 function respondToVisible(element, call) {
@@ -31,17 +42,17 @@ function cancelToRespond(element) {
 }
 
 function isInViewport(element) {
-    var $element = $(element)
-    var elementTop = $element.offset().top
-    var elementBottom = elementTop + $element.outerHeight()
+    const $element = $(element)
+    const elementTop = $element.offset().top
+    const elementBottom = elementTop + $element.outerHeight()
 
-    var viewportTop = $(window).scrollTop()
-    var viewportBottom = viewportTop + $(window).height()
+    const viewportTop = $(window).scrollTop()
+    const viewportBottom = viewportTop + $(window).height()
     return elementBottom > viewportTop && elementTop < viewportBottom
 }
 
 function selectionText() {
-    var text = ''
+    let text = ''
     if (window.getSelection) {
         text = window.getSelection().toString()
     } else if (document.selection && document.selection.type !== 'Control') {
@@ -51,7 +62,7 @@ function selectionText() {
 }
 
 function copyElementText(element) {
-    var range, selection
+    let range, selection
     if (document.body.createTextRange) {
         range = document.body.createTextRange()
         range.moveToElementText(element)
@@ -73,4 +84,12 @@ function copyElementText(element) {
     return true
 }
 
-export {debounce, respondToVisible, cancelToRespond, selectionText, copyElementText}
+export {
+    debounce,
+    scrollTo,
+    apiEndpoint,
+    respondToVisible,
+    cancelToRespond,
+    selectionText,
+    copyElementText
+}

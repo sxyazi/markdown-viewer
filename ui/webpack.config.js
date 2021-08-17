@@ -15,8 +15,18 @@ module.exports = {
         rules: [
             {test: /\.html$/, use: 'html-loader'},
             {test: /\.(png|woff|woff2|eot|ttf|svg)$/, type: 'asset/inline'},
-            {test: /\.s?css$/, use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']}
+            {test: /\.s?css$/, use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']},
+            {
+                test: /\.m?js$/,
+                use: 'babel-loader',
+                exclude: /(node_modules|bower_components)/
+            }
         ],
+    },
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'src/')
+        }
     },
     plugins: [
         new CleanWebpackPlugin({
