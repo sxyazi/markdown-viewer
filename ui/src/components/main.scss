@@ -142,22 +142,18 @@ aside.unfold {
   @apply w-full h-full px-12 md:px-14 lg:px-16 py-7 overflow-auto;
   @apply dark:bg-gray-800 dark:text-gray-200;
 
+  a {
+    @apply text-blue-500 dark:text-blue-300;
+  }
+
   img {
     @apply inline-block;
     filter: brightness(.85) contrast(1.2);
   }
 
   pre {
-    @apply opacity-0 transition-opacity delay-100 cursor-text break-all break-words whitespace-pre-wrap;
-    @apply border border-gray-200 dark:border-gray-700 dark:bg-gray-800;
-
-    &:focus {
-      outline: 1px auto #e59700;
-
-      @media (prefers-color-scheme: dark) {
-        outline: none;
-      }
-    }
+    @apply border opacity-0 transition-opacity delay-100 cursor-text break-all break-words whitespace-pre-wrap;
+    @apply border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800;
 
     &.rendered {
       @apply opacity-100;
@@ -173,13 +169,13 @@ aside.unfold {
     ul {
       margin-bottom: 16px;
     }
-  }
 
-  li {
-    @apply list-disc;
+    li {
+      @apply list-disc;
 
-    p {
-      @apply mt-0 mb-2;
+      p {
+        @apply mt-0 mb-2;
+      }
     }
   }
 
@@ -189,6 +185,10 @@ aside.unfold {
     .heading-anchor {
       @apply hidden;
     }
+  }
+
+  h2 {
+    @apply dark:border-gray-600;
   }
 
   * + h1 {
