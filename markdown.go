@@ -4,11 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/alecthomas/chroma"
-	"github.com/alecthomas/chroma/styles"
 	"github.com/litao91/goldmark-mathjax"
 	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark-highlighting"
 	goldmarkmeta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/extension"
@@ -47,7 +44,7 @@ func markdown(p string) (ret string, e error) {
 
 func markdownRender(source []byte) (ret *bytes.Buffer, e error) {
 	md := markdownInstance()
-	source = simplifyCodeBlock(source)
+	//source = simplifyCodeBlock(source)  //TODO
 	context := parser.NewContext(parser.WithIDs(&HeadingIDs{times: map[string]int{}}))
 
 	ret = new(bytes.Buffer)
@@ -87,6 +84,12 @@ func markdownFilter(p string, output *bytes.Buffer) (ret string, e error) {
 		}
 	})
 
+	doc.Find("pre").Each(func(i int, selection *goquery.Selection) {
+		if class, ok := selection.Find("code").Attr("class"); ok {
+			selection.AddClass(class)
+		}
+	})
+
 	doc.Find("math").Each(func(i int, selection *goquery.Selection) {
 		htm, _ := selection.Html()
 		if _, block := selection.Attr("block"); block {
@@ -115,11 +118,6 @@ func markdownFilter(p string, output *bytes.Buffer) (ret string, e error) {
 }
 
 func markdownInstance() goldmark.Markdown {
-	builder := styles.Get("github").Builder()
-	builder.Add(chroma.LineHighlight, "bg:#f7f7f7")
-
-	style, _ := builder.Build()
-
 	return goldmark.New(
 		goldmark.WithExtensions(
 			extension.GFM,
@@ -130,9 +128,6 @@ func markdownInstance() goldmark.Markdown {
 
 			goldmarkmeta.Meta,
 			mathjax.MathJax,
-			highlighting.NewHighlighting(
-				highlighting.WithCustomStyle(style),
-			),
 		),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),

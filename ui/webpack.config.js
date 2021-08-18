@@ -26,7 +26,7 @@ module.exports = {
             {test: /\.s?css$/, use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']},
             {
                 test: /\.m?js$/,
-                use: 'babel-loader',
+                use: process.env.NODE_ENV === 'production' ? ['babel-loader'] : [],
                 exclude: /(node_modules|bower_components)/
             }
         ],

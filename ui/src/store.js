@@ -4,7 +4,6 @@ import Sidebar from '@/components/sidebar'
 import Content from '@/components/content'
 
 export default class {
-    static readjust = false
     static scrolling = false
     static allFiles = {}
     static currentFile = {}
@@ -52,10 +51,8 @@ export default class {
 
             this.currentHeading = $('.heading[id="' + decodeURIComponent(location.hash.substr(1)) + '"]')
             if (isSwitch && this.currentHeading.length === 0) {
-                scrollTo($('#content'), 0)
+                scrollTo($('#content'), 0, 100)
             } else if (isSwitch) {
-                this.readjust = true
-                setTimeout(() => this.readjust = false, 3000)
                 this.currentHeading.find('.heading-anchor').click()
             }
 

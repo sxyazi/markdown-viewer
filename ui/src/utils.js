@@ -11,6 +11,27 @@ const observer = new IntersectionObserver(function (entries, observer) {
     root: document.documentElement
 })
 
+function prism() {
+    const Prism = require('prismjs')
+    require('prismjs/components/prism-js-templates.min')
+    require('prismjs/components/prism-markup-templating.min')
+    require('prismjs/components/prism-c.min')
+    require('prismjs/components/prism-cpp.min')
+    require('prismjs/components/prism-php.min')
+
+    require('prismjs/components/prism-go.min')
+    require('prismjs/components/prism-java.min')
+    require('prismjs/components/prism-swift.min')
+    require('prismjs/components/prism-python.min')
+    require('prismjs/components/prism-javascript.min')
+    require('prismjs/components/prism-typescript.min')
+
+    require('prismjs/components/prism-css.min')
+    require('prismjs/components/prism-http.min')
+    require('prismjs/components/prism-bash.min')
+    return Prism
+}
+
 function debounce(call, timeout) {
     let timer
     return () => {
@@ -19,8 +40,9 @@ function debounce(call, timeout) {
     }
 }
 
-function scrollTo($e, top, time = 100) {
+function scrollTo($e, top, time = 50) {
     Store.scrolling = true
+    $e.clearQueue().stop()
     $e.animate({scrollTop: top}, time, () => setTimeout(() => Store.scrolling = false, 500))
 }
 
@@ -85,6 +107,7 @@ function copyElementText(element) {
 }
 
 export {
+    prism,
     debounce,
     scrollTo,
     apiEndpoint,

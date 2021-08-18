@@ -144,14 +144,23 @@ aside.unfold {
 
   img {
     @apply inline-block;
+    filter: brightness(.85) contrast(1.2);
   }
 
   pre {
-    // TODO
-    @apply border border-gray-200 cursor-text break-all break-words whitespace-pre-wrap;
+    @apply opacity-0 transition-opacity delay-100 cursor-text break-all break-words whitespace-pre-wrap;
+    @apply border border-gray-200 dark:border-gray-700 dark:bg-gray-800;
 
     &:focus {
       outline: 1px auto #e59700;
+
+      @media (prefers-color-scheme: dark) {
+        outline: none;
+      }
+    }
+
+    &.rendered {
+      @apply opacity-100;
     }
 
     & + pre {
@@ -189,17 +198,17 @@ aside.unfold {
   .heading {
     @apply relative;
 
+    .heading-anchor {
+      @apply pr-1 absolute text-green-600 dark:text-green-400 opacity-0 transform -translate-x-full transition-opacity;
+    }
+
     &:hover .heading-anchor {
       @apply opacity-100;
     }
   }
 
-  .heading-anchor {
-    @apply pr-1 absolute text-green-600 dark:text-green-400 opacity-0 transform -translate-x-full;
-  }
-
   .math {
-    @apply opacity-0;
+    @apply opacity-0 transition-opacity;
 
     &.rendered {
       @apply opacity-100;
@@ -219,8 +228,20 @@ aside.unfold {
     font-weight: 500;
   }
 
+  code {
+    @apply dark:bg-gray-700;
+  }
+
   table {
     @apply overflow-visible;
+
+    tr {
+      @apply dark:bg-gray-800;
+    }
+
+    tr, th, td {
+      @apply dark:border-gray-700;
+    }
 
     th:empty {
       @apply hidden;
@@ -257,3 +278,7 @@ aside.unfold {
     }
   }
 }
+
+@import "~prism-themes/themes/prism-base16-ateliersulphurpool.light.css" (prefers-color-scheme: light);
+
+@import "~prism-themes/themes/prism-dracula.css" (prefers-color-scheme: dark);

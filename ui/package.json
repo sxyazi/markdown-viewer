@@ -33,6 +33,8 @@
   "dependencies": {
     "github-markdown-css": "^4.0.0",
     "jquery": "^3.6.0",
-    "katex": "^0.13.13"
+    "katex": "^0.13.13",
+    "prism-themes": "^1.8.0",
+    "prismjs": "^1.24.1"
   }
 }
