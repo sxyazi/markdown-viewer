@@ -2,14 +2,18 @@ import $ from 'jquery'
 import Store from '@/store'
 import {apiEndpoint} from '@/utils'
 
-function scrollToFit() {
+function activate(path) {
     const $files = $('#files')
-    const $file = $files.find('li[path="' + Store.currentFile.path + '"]')
-    const scrollTop = $file.offset().top - $files.offset().top + $files.scrollTop()
+    const $file = $files.find('li[path="' + path + '"]')
 
-    if (scrollTop > $files.scrollTop() + $files.height()) {
-        $files.animate({scrollTop: scrollTop}, 100)
-    }
+    // Activate current item
+    $files.find('li').removeClass('active')
+    $file.addClass('active')
+
+    // Calculate the suitable top offset
+    const top = $file.offset().top - $files.offset().top + $files.scrollTop()
+    if (top > $files.scrollTop() + $files.height())
+        $files.animate({scrollTop: top}, 100)
 }
 
 $('#switch').click(() => {
@@ -45,4 +49,4 @@ $.get(apiEndpoint('files'), function (files) {
     Store.openQueue()
 })
 
-export default {scrollToFit}
+export default {activate}

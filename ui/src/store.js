@@ -1,43 +1,41 @@
 import $ from 'jquery'
 import {apiEndpoint, scrollTo} from '@/utils'
 import Sidebar from '@/components/sidebar'
+import Outline from '@/components/outline'
 import Content from '@/components/content'
 
 export default class {
     static scrolling = false
     static allFiles = {}
     static currentFile = {}
-    static currentHeading = {}
+    static #currentHeading = {}
     static mathElements = {}
 
+    static set currentHeading(value) {
+        this.#currentHeading = value
+
+        if (this.#currentHeading.length > 0)
+            Outline.activate(value.attr('id'))
+    }
+
+    static get currentHeading() {
+        return this.#currentHeading
+    }
+
     static open(path, done) {
-        if (!this.allFiles.list) {
+        if (!this.allFiles.list)
             return done(false)
-        }
 
-        let file = null
-        let isSwitch = false
-        for (let i = 0; i < this.allFiles.list.length; i++) {
-            if (path === this.allFiles.list[i].path) {
-                file = this.allFiles.list[i]
-                break
-            }
-        }
+        let file = this.allFiles.list.find((file) => file.path === path)
+        let isSwitch = file.path !== this.currentFile.path
+        if (!file) return done(false)
 
-        if (!file) {
-            return done(false)
-        }
-
-        isSwitch = file.path !== this.currentFile.path
         this.currentFile = file
         localStorage.setItem('recent:' + this.allFiles.root, file.path)
 
-        Sidebar.scrollToFit()
-        $('#files li').removeClass('active')
-        $('#files li[path="' + file.path + '"]').addClass('active')
-        if (file.path !== decodeURIComponent(location.pathname)) {
+        Sidebar.activate(file.path)
+        if (file.path !== decodeURIComponent(location.pathname))
             history.pushState(null, '', file.path)
-        }
 
         $.post(apiEndpoint('file'), {
             path: file.path
@@ -50,11 +48,10 @@ export default class {
             Content.renderAsync()
 
             this.currentHeading = $('.heading[id="' + decodeURIComponent(location.hash.substr(1)) + '"]')
-            if (isSwitch && this.currentHeading.length === 0) {
+            if (isSwitch && this.currentHeading.length === 0)
                 scrollTo($('#content'), 0, 100)
-            } else if (isSwitch) {
+            else if (isSwitch)
                 this.currentHeading.find('.heading-anchor').click()
-            }
 
             done && done(file)
         })
