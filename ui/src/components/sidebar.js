@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import Store from '@/store'
-import {apiEndpoint} from '@/utils'
+import {apiEndpoint, clone, groupFiles} from '@/utils'
 
 function activate(path) {
     const $files = $('#files')
@@ -8,7 +8,10 @@ function activate(path) {
 
     // Activate current item
     $files.find('li').removeClass('active')
+    $files.find('li+ul').css('display', 'none')
     $file.addClass('active')
+    $file.parent().css('display', 'block')
+    $file.next('ul').css('display', 'block')
 
     // Calculate the suitable top offset
     const top = $file.offset().top - $files.offset().top + $files.scrollTop()
@@ -34,16 +37,30 @@ $.get(apiEndpoint('files'), function (files) {
     try {
         Store.allFiles = JSON.parse(files)
     } catch (e) {
-        Store.allFiles = {}
+        Store.allFiles = {list: []}
     }
 
-    for (let i = 0; i < Store.allFiles.list.length; i++) {
-        const file = $('<li/>')
-        file.text(Store.allFiles.list[i].name)
-        file.attr('path', Store.allFiles.list[i].path)
-        file.attr('title', Store.allFiles.list[i].path)
+    const groupedFiles = groupFiles(clone(Store.allFiles))
+    const createFileElem = (file) => {
+        const $file = $('<li/>')
+        $file.attr('path', file.path)
+        $file.attr('title', file.path)
+        $file.attr('type', file.children ? 'directory' : 'general')
+        $file.append($('<span/>').text(file.name))
+        return $file
+    }
 
-        $('#files').append(file)
+    const $files = $('#files')
+    for (let file of groupedFiles.list) {
+        $files.append(createFileElem(file))
+
+        if (file.children) {
+            const $sub = $('<ul/>')
+            for (let child of file.children)
+                $sub.append(createFileElem(child))
+
+            $files.append($sub)
+        }
     }
 
     Store.openQueue()

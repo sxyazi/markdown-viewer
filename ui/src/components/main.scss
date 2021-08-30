@@ -69,24 +69,16 @@ aside.unfold {
   @apply px-7 pb-7 hidden lg:flex flex-col text-sm overflow-auto text-gray-700 dark:text-gray-200;
 
   li {
-    @apply py-3 pl-6 cursor-pointer hover:text-green-600 dark:hover:text-green-400;
+    @apply py-3 cursor-pointer;
 
-    &::before {
-      content: '';
-      @apply inline-block align-middle w-1 h-1 rounded bg-gray-500 dark:bg-gray-400 -ml-2.5 mr-2.5;
-    }
-
-    &:hover::before {
-      @apply bg-green-500 dark:bg-green-400;
-    }
-
-    &.active {
+    &:hover > span,
+    &.active > span {
       @apply text-green-600 dark:text-green-400;
-
-      &::before {
-        @apply bg-green-500 dark:bg-green-400;
-      }
     }
+  }
+
+  li + ul {
+    @apply px-4 hidden border-l border-gray-200 dark:border-gray-600;
   }
 }
 
@@ -148,11 +140,6 @@ aside.unfold {
 
   a {
     @apply text-blue-500 dark:text-blue-300;
-  }
-
-  img {
-    @apply inline-block;
-    filter: brightness(.85) contrast(1.2);
   }
 
   pre {
@@ -229,11 +216,6 @@ aside.unfold {
     &.display {
       @apply block;
     }
-  }
-
-  b,
-  strong {
-    font-weight: 500;
   }
 
   code {

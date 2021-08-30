@@ -1,4 +1,3 @@
-import 'github-markdown-css'
 import 'katex/dist/katex.css'
 import 'tailwindcss/tailwind.css'
 import Main from './components/main.html'
@@ -8,6 +7,8 @@ function load(template) {
 
     require('./components/main.js')
     require('./components/main.scss')
+    require('./components/markdown.scss')
+    require('./components/addition.scss')
 }
 
 load(Main)

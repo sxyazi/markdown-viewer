@@ -102,6 +102,16 @@ function renderMath(element) {
     Store.mathElements[text] = element.cloneNode(true)
 }
 
+$('#content').on('click', 'a', function () {
+    const href = decodeURIComponent($(this).attr('href'))
+    Store.open(href, ok => {
+        if (ok) return
+        $(this).attr('target') ? window.open(href) : (location.href = href)
+    })
+
+    return false
+})
+
 $('#content').on('click', '.heading-anchor', function () {
     const $content = $('#content')
     Store.currentHeading = $(this).parent()

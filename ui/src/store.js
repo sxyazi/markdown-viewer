@@ -11,6 +11,10 @@ export default class {
     static #currentHeading = {}
     static mathElements = {}
 
+    static findFile(path) {
+        return this.allFiles.list.find(file => file.path === path)
+    }
+
     static set currentHeading(value) {
         this.#currentHeading = value
 
@@ -26,10 +30,10 @@ export default class {
         if (!this.allFiles.list)
             return done(false)
 
-        let file = this.allFiles.list.find((file) => file.path === path)
-        let isSwitch = file.path !== this.currentFile.path
+        let file = this.findFile(path)
         if (!file) return done(false)
 
+        let isSwitch = file.path !== this.currentFile.path
         this.currentFile = file
         localStorage.setItem('recent:' + this.allFiles.root, file.path)
 

@@ -19,12 +19,12 @@ func stat(w http.ResponseWriter, req *http.Request) {
 	var resp *File
 	if err != nil {
 		resp = &File{
-			Name: baseWithoutExt(p),
+			Name: markdownName(p),
 			Path: p,
 		}
 	} else {
 		resp = &File{
-			Name:      baseWithoutExt(p),
+			Name:      markdownName(p),
 			Path:      p,
 			Size:      info.Size(),
 			Exists:    true,

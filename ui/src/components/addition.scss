@@ -1,0 +1,25 @@
+yellow {
+  @apply text-yellow-500;
+}
+
+wrong {
+  @apply text-pink-500 font-medium;
+}
+
+right {
+  @apply text-blue-500 font-medium;
+}
+
+@media (prefers-color-scheme: dark) {
+  yellow {
+    @apply text-yellow-300;
+  }
+
+  wrong {
+    @apply text-pink-300 font-medium;
+  }
+
+  right {
+    @apply text-blue-300 font-medium;
+  }
+}

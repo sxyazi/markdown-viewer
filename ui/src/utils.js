@@ -11,6 +11,10 @@ const observer = new IntersectionObserver(function (entries, observer) {
     root: document.documentElement
 })
 
+function clone(obj) {
+    return JSON.parse(JSON.stringify(obj))
+}
+
 function prism() {
     const Prism = require('prismjs')
     require('prismjs/components/prism-js-templates.min')
@@ -52,6 +56,40 @@ function apiEndpoint(url) {
     }
 
     return `http://127.0.0.1:3000/${url}`
+}
+
+function groupFiles(files) {
+    const paths = {}
+    const groups = {}
+    for (let file of files.list)
+        paths[file.path] = file
+
+    let i = 0
+    while (i < files.list.length) {
+        const file = files.list[i++]
+
+        // Contains at least one slash in addition to the first slash
+        const index = file.path.substr(1).indexOf('/')
+        if (index === -1) continue
+
+        // The README.md file must exist in this directory
+        const dir = file.path.substr(0, index + 1)
+        if (!(`${dir}/README.md` in paths)) continue
+
+        if (dir in groups) {
+            files.list.splice(--i, 1)
+        } else {
+            groups[dir] = []
+            paths[file.path].children = groups[dir]
+            paths[file.path].name = paths[file.path].name === 'README.md' ? `${dir.substr(1)}/` : paths[file.path].name
+            files.list.splice(i - 1, 1, paths[file.path])
+        }
+
+        if (file.path !== `${dir}/README.md`)
+            groups[dir].push(file)
+    }
+
+    return files
 }
 
 function respondToVisible(element, call) {
@@ -107,10 +145,12 @@ function copyElementText(element) {
 }
 
 export {
+    clone,
     prism,
     debounce,
     scrollTo,
     apiEndpoint,
+    groupFiles,
     respondToVisible,
     cancelToRespond,
     selectionText,

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"github.com/PuerkitoBio/goquery"
 	"io/fs"
 	"net/url"
 	"os"
@@ -30,7 +32,7 @@ func getFiles(root string) (files Files) {
 		}
 
 		files.List = append(files.List, &File{
-			Name:      baseWithoutExt(p),
+			Name:      markdownName(p),
 			Path:      path.Clean("/" + p[rootPathLength:]),
 			Size:      info.Size(),
 			Exists:    true,
@@ -56,11 +58,25 @@ func getArgument() string {
 	return arg
 }
 
+func purify(html []byte) []byte {
+	doc, e := goquery.NewDocumentFromReader(bytes.NewReader(html))
+	if e != nil {
+		return html
+	}
+
+	text := strings.Trim(doc.Text(), " ")
+	for strings.Contains(text, "  ") {
+		text = strings.ReplaceAll(text, "  ", " ")
+	}
+
+	return []byte(text)
+}
+
 func distinct(id []byte, records map[string]int) []byte {
 	_id := string(id)
 	if times, ok := records[_id]; ok {
 		records[_id] = times + 1
-		return []byte(_id + strconv.Itoa(records[_id]))
+		return []byte(_id + "-" + strconv.Itoa(records[_id]))
 	}
 
 	records[_id] = 1
@@ -139,12 +155,8 @@ func fileExistsDeep(root string, directory string, filename string) bool {
 	return false
 }
 
-func baseWithoutExt(p string) string {
-	base := path.Base(p)
-	if pos := strings.LastIndexByte(base, '.'); pos != -1 {
-		return base[:pos]
-	}
-	return base
+func markdownName(p string) string {
+	return path.Base(p)
 }
 
 func isExternalLink(link string) bool {
@@ -152,12 +164,16 @@ func isExternalLink(link string) bool {
 	return r.MatchString(link)
 }
 
-func forwardResource(parent, src string) string {
+func forwardResource(relative, src string) string {
 	if isExternalLink(src) {
 		return src
 	}
 
-	return "/forward?path=" + url.QueryEscape(leftSlash(path.Join(parent, src)[len(store.workingPath):]))
+	if !strings.HasPrefix(src, "/") {
+		src = path.Join(relative, src)[len(store.workingPath):]
+	}
+
+	return "/forward?path=" + url.QueryEscape(leftSlash(src))
 }
 
 func simplifyCodeBlock(source []byte) []byte {

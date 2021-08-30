@@ -22,7 +22,7 @@ type HeadingIDs struct {
 }
 
 func (s *HeadingIDs) Generate(value []byte, kind ast.NodeKind) []byte {
-	return distinct(value, s.times)
+	return distinct(purify(value), s.times)
 }
 
 func (s *HeadingIDs) Put(value []byte) {
