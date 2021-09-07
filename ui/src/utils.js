@@ -50,12 +50,29 @@ function scrollTo($e, top, time = 50) {
     $e.animate({scrollTop: top}, time, () => setTimeout(() => Store.scrolling = false, 500))
 }
 
+function syncLocation(uri) {
+    let target
+    let current = decodeURIComponent(location.pathname) + decodeURIComponent(location.hash)
+
+    if (uri)
+        target = parsePath(uri).join('')
+    else
+        target = Store.currentFile.path + (Store.currentHeading.length ? `#${Store.currentHeading.attr('id')}` : '')
+
+    if (current !== target) history.pushState(null, '', target)
+}
+
 function apiEndpoint(url) {
     if (location.port === '3000') {
         return `/${url}`
     }
 
     return `http://127.0.0.1:3000/${url}`
+}
+
+function parsePath(uri) {
+    const url = new URL(uri, location.href)
+    return [decodeURIComponent(url.pathname), decodeURIComponent(url.hash)]
 }
 
 function groupFiles(files) {
@@ -144,15 +161,35 @@ function copyElementText(element) {
     return true
 }
 
+var crc32 = (() => {
+    const table = [];
+    for (let n = 0, c; n < 256; n++) {
+        c = n;
+        for (let k = 0; k < 8; k++)
+            c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+        table[n] = c;
+    }
+
+    return (str) => {
+        let crc = 0 ^ (-1);
+        for (let i = 0; i < str.length; i++)
+            crc = (crc >>> 8) ^ table[(crc ^ str.charCodeAt(i)) & 0xFF];
+        return (crc ^ (-1)) >>> 0;
+    }
+})()
+
 export {
     clone,
     prism,
     debounce,
     scrollTo,
+    syncLocation,
     apiEndpoint,
+    parsePath,
     groupFiles,
     respondToVisible,
     cancelToRespond,
     selectionText,
-    copyElementText
+    copyElementText,
+    crc32
 }

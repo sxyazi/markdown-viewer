@@ -9,11 +9,11 @@
     "build": "cross-env NODE_ENV=production webpack build"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
-    "autoprefixer": "^10.3.3",
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.4",
+    "autoprefixer": "^10.3.4",
     "babel-loader": "^8.2.2",
-    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "clean-webpack-plugin": "^4.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.2.0",
     "cssnano": "^5.0.8",
@@ -21,18 +21,18 @@
     "html-webpack-plugin": "^5.3.2",
     "postcss": "^8.3.6",
     "postcss-loader": "^6.1.1",
-    "sass": "^1.38.1",
+    "sass": "^1.39.0",
     "sass-loader": "^12.1.0",
     "style-loader": "^3.2.1",
-    "tailwindcss": "^2.2.8",
-    "terser-webpack-plugin": "^5.1.4",
-    "webpack": "^5.51.1",
+    "tailwindcss": "^2.2.10",
+    "terser-webpack-plugin": "^5.2.3",
+    "webpack": "^5.52.0",
     "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "^4.0.0"
+    "webpack-dev-server": "^4.1.0"
   },
   "dependencies": {
     "jquery": "^3.6.0",
-    "katex": "^0.13.13",
+    "katex": "^0.13.18",
     "prism-themes": "^1.8.0",
     "prismjs": "^1.24.1"
   }

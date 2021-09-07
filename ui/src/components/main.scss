@@ -68,6 +68,10 @@ aside.unfold {
 #files {
   @apply px-7 pb-7 hidden lg:flex flex-col text-sm overflow-auto text-gray-700 dark:text-gray-200;
 
+  ul {
+    @apply flex flex-col;
+  }
+
   li {
     @apply py-3 cursor-pointer;
 
@@ -140,6 +144,14 @@ aside.unfold {
 
   a {
     @apply text-blue-500 dark:text-blue-300;
+  }
+
+  img {
+    @apply opacity-0 transition-opacity delay-100;
+
+    &.rendered {
+      @apply opacity-100;
+    }
   }
 
   pre {

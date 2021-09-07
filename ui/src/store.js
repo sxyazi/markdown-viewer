@@ -1,5 +1,5 @@
 import $ from 'jquery'
-import {apiEndpoint, scrollTo} from '@/utils'
+import {apiEndpoint, parsePath, scrollTo, syncLocation} from '@/utils'
 import Sidebar from '@/components/sidebar'
 import Outline from '@/components/outline'
 import Content from '@/components/content'
@@ -7,7 +7,7 @@ import Content from '@/components/content'
 export default class {
     static scrolling = false
     static allFiles = {}
-    static currentFile = {}
+    static #currentFile = {}
     static #currentHeading = {}
     static mathElements = {}
 
@@ -15,88 +15,80 @@ export default class {
         return this.allFiles.list.find(file => file.path === path)
     }
 
-    static set currentHeading(value) {
-        this.#currentHeading = value
+    static get currentFile() {
+        return this.#currentFile
+    }
 
-        if (this.#currentHeading.length > 0)
-            Outline.activate(value.attr('id'))
+    static set currentFile(value) {
+        this.#currentFile = value
+        localStorage.setItem('recent:' + this.allFiles.root, value.path)
     }
 
     static get currentHeading() {
         return this.#currentHeading
     }
 
-    static open(path, done) {
+    static set currentHeading(value) {
+        if (value.length &&
+            value.is(this.#currentHeading)) return
+        this.#currentHeading = value
+
+        if (this.#currentHeading.length)
+            Outline.activate(value.attr('id'))
+    }
+
+    static open(uri, done) {
         if (!this.allFiles.list)
             return done(false)
 
+        const [path, hash] = parsePath(uri)
         let file = this.findFile(path)
         if (!file) return done(false)
 
-        let isSwitch = file.path !== this.currentFile.path
         this.currentFile = file
-        localStorage.setItem('recent:' + this.allFiles.root, file.path)
-
         Sidebar.activate(file.path)
-        if (file.path !== decodeURIComponent(location.pathname))
-            history.pushState(null, '', file.path)
 
         $.post(apiEndpoint('file'), {
             path: file.path
         }, (html) => {
             $('#content').html(html)
-
-            const toc = $('#table-of-contents').html() || ''
-            $('#outline').html() !== toc && $('#outline').html(toc)
-            $('#table-of-contents').remove()
             Content.renderAsync()
 
-            this.currentHeading = $('.heading[id="' + decodeURIComponent(location.hash.substr(1)) + '"]')
-            if (isSwitch && this.currentHeading.length === 0)
+            if (hash === '')
                 scrollTo($('#content'), 0, 100)
-            else if (isSwitch)
-                this.currentHeading.find('.heading-anchor').click()
+            else
+                setTimeout(() => $('.heading-anchor[href="' + hash + '"]').click())
+
+            Outline.update()
+            syncLocation(uri)
 
             done && done(file)
         })
     }
 
     static openRecent(done) {
-        let path
-        if (/\.md$/.test(location.pathname)) {
-            path = decodeURIComponent(location.pathname)
-        } else {
-            path = localStorage.getItem('recent:' + this.allFiles.root)
-        }
+        let uri
+        if (/\.md$/.test(location.pathname))
+            uri = location.pathname + location.hash
+        else
+            uri = localStorage.getItem('recent:' + this.allFiles.root)
 
-        this.open(path, done)
+        this.open(uri, done)
     }
 
     static openReadme(done) {
-        if (!this.allFiles.list) {
+        if (!this.allFiles.list)
             return done(false)
-        }
 
-        const finds = []
-        for (let i = 0; i < this.allFiles.list.length; i++) {
-            if (this.allFiles.list[i].name.toLowerCase() === 'readme.md') {
-                finds.push(this.allFiles.list[i].path)
-            }
-        }
-
-        if (finds.length < 1) {
+        const file = this.allFiles.list.find(file => file.path.toLowerCase() === '/readme.md')
+        if (!file)
             return done(false)
-        }
 
-        finds.sort(function (a, b) {
-            return a.length > b.length ? 1 : -1
-        })
-
-        this.open(finds.shift(), done)
+        this.open(file.path, done)
     }
 
     static openFirst(done) {
-        if (this.allFiles.list && this.allFiles.list.length > 0) {
+        if (this.allFiles.list && this.allFiles.list.length) {
             return this.open(this.allFiles.list[0].path, done)
         }
 

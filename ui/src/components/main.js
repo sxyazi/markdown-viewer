@@ -7,9 +7,11 @@ $('aside').addClass(localStorage.getItem('ui:sidebar') === 'inactive' ? 'fold' :
 $('#outline').addClass(localStorage.getItem('ui:outline') === 'active' ? 'active' : '')
 
 window.addEventListener('popstate', () => {
-    Store.currentHeading = $('.heading[id="' + decodeURIComponent(location.hash.substr(1)) + '"]')
+    if (Store.currentFile.path !== decodeURIComponent(location.pathname))
+        return Store.openRecent()
 
-    if (Store.currentFile.path !== decodeURIComponent(location.pathname)) {
-        Store.openRecent()
-    }
+    if (location.hash === '')
+        Store.currentHeading = {}
+    else
+        $('.heading-anchor[href="' + decodeURIComponent(location.hash) + '"]').click()
 })

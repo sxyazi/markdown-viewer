@@ -10,8 +10,8 @@ function activate(path) {
     $files.find('li').removeClass('active')
     $files.find('li+ul').css('display', 'none')
     $file.addClass('active')
-    $file.parent().css('display', 'block')
-    $file.next('ul').css('display', 'block')
+    $file.next('ul').css('display', 'flex')
+    $file.parent(':not(#files)').css('display', 'flex')
 
     // Calculate the suitable top offset
     const top = $file.offset().top - $files.offset().top + $files.scrollTop()

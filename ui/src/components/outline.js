@@ -1,4 +1,19 @@
 import $ from 'jquery'
+import Store from '@/store'
+import {crc32} from '@/utils'
+
+function update() {
+    const toc = $('#table-of-contents').html() || ''
+    const hash = crc32(toc)
+
+    if ($('#outline').data('hash') !== hash) {
+        $('#outline').data('hash', hash)
+        $('#outline').html(toc)
+        Store.currentHeading.length && activate(Store.currentHeading.attr('id'))
+    }
+
+    $('#table-of-contents').remove()
+}
 
 function activate(id) {
     const $ul = $('#outline > ul')
@@ -27,4 +42,9 @@ $('#outline').click(function (e) {
     }
 })
 
-export default {activate}
+$('#outline').on('click', 'li > a', function () {
+    $('.heading-anchor[href="' + $(this).attr('href') + '"]').click()
+    return false
+})
+
+export default {update, activate}

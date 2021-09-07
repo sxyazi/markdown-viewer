@@ -9,18 +9,19 @@ import {
     prism,
     respondToVisible,
     scrollTo,
-    selectionText
+    selectionText,
+    syncLocation
 } from '@/utils'
 
 const adjustHeading = debounce(() => {
-    if (!Store.scrolling || Store.currentHeading.length <= 0)
+    if (!Store.scrolling || !Store.currentHeading.length)
         return
 
     if (atBottom())
         Store.currentHeading.find('.heading-anchor').click()
 }, 50)
 
-function atBottom() {
+function atBottom($currentHeading = Store.currentHeading) {
     const contentElem = $('#content').get(0)
     // The height of the element viewport, without last screen
     const lastScrollHeight = contentElem.scrollHeight - contentElem.offsetHeight
@@ -30,8 +31,8 @@ function atBottom() {
         return true
 
     // Is located in the last screen
-    if (Store.currentHeading.length > 0)
-        return contentElem.scrollTop + Store.currentHeading.offset().top > lastScrollHeight
+    if ($currentHeading.length)
+        return contentElem.scrollTop + $currentHeading.offset().top > lastScrollHeight
 
     return false
 }
@@ -65,12 +66,12 @@ function renderCode(element) {
 
 function renderImage(element) {
     cancelToRespond(element)
+    if (element.dataset.rendering) return
+    else element.dataset.rendering = 'true'
 
-    if (element.hasAttribute('data-src')) {
-        element.setAttribute('src', element.getAttribute('data-src'))
-        element.removeAttribute('data-src')
-        adjustHeading(element)
-    }
+    element.setAttribute('src', element.getAttribute('data-src'))
+    element.classList.add('rendered')
+    adjustHeading(element)
 }
 
 function renderMath(element) {
@@ -102,8 +103,8 @@ function renderMath(element) {
     Store.mathElements[text] = element.cloneNode(true)
 }
 
-$('#content').on('click', 'a', function () {
-    const href = decodeURIComponent($(this).attr('href'))
+$('#content').on('click', 'a:not(.heading-anchor)', function () {
+    const href = $(this).attr('href')
     Store.open(href, ok => {
         if (ok) return
         $(this).attr('target') ? window.open(href) : (location.href = href)
@@ -121,12 +122,9 @@ $('#content').on('click', '.heading-anchor', function () {
     else if (Store.currentHeading.is('.heading:last'))
         scrollTo($content, 99999999)
     else
-        scrollTo($content, Store.currentHeading.get(0).offsetTop)
+        scrollTo($content, Store.currentHeading.get(0).offsetTop - parseFloat(Store.currentHeading.css('marginTop')) - parseFloat(Store.currentHeading.css('paddingTop')) + 1)
 
-    const hash = '#' + decodeURIComponent($(this).parent().attr('id'))
-    if (location.hash !== hash)
-        location.hash = hash
-
+    syncLocation()
     return false
 })
 
@@ -139,21 +137,22 @@ $('#content').scroll(debounce(() => {
     const $headings = $('#content .heading')
     if ($headings.length === 0) return
 
-    let flag = false
+    let current
     for (let i = $headings.length - 1; i >= 0; i--) {
-        const $heading = $headings.eq(i)
-        if ($heading.position().top <= 0) {
-            [flag, Store.currentHeading] = [true, $heading]
+        if ($headings.eq(i).position().top <= 0) {
+            current = $headings.eq(i)
             break
         }
     }
 
-    if (!flag)
-        Store.currentHeading = $headings.first()
-    else if (atBottom())
+    if (!current)
+        Store.currentHeading = {}
+    else if (atBottom(current))
         Store.currentHeading = $headings.last()
+    else
+        Store.currentHeading = current
 
-    history.pushState(null, '', Store.currentFile.path + '#' + Store.currentHeading.attr('id'))
+    syncLocation()
 
 }, 300))
 
