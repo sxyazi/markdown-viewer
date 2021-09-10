@@ -17,6 +17,11 @@ function clone(obj) {
 
 function prism() {
     const Prism = require('prismjs')
+
+    // Plugins
+    require('prismjs/plugins/line-highlight/prism-line-highlight')
+
+    // Components
     require('prismjs/components/prism-js-templates.min')
     require('prismjs/components/prism-markup-templating.min')
     require('prismjs/components/prism-c.min')

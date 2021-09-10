@@ -29,20 +29,19 @@ export default class {
     }
 
     static set currentHeading(value) {
-        if (value.length &&
-            value.is(this.#currentHeading)) return
-        this.#currentHeading = value
+        if ((!value.length && !this.#currentHeading.length) ||
+            (value.length && value.is(this.#currentHeading))) return
 
-        if (this.#currentHeading.length)
-            Outline.activate(value.attr('id'))
+        this.#currentHeading = value
+        Outline.activate(value.length ? value.attr('id') : null)
     }
 
-    static open(uri, done) {
+    static open(uri, silent, done) {
         if (!this.allFiles.list)
             return done(false)
 
         const [path, hash] = parsePath(uri)
-        let file = this.findFile(path)
+        const file = this.findFile(path)
         if (!file) return done(false)
 
         this.currentFile = file
@@ -54,9 +53,9 @@ export default class {
             $('#content').html(html)
             Content.renderAsync()
 
-            if (hash === '')
+            if (!silent && hash === '')
                 scrollTo($('#content'), 0, 100)
-            else
+            else if (!silent)
                 setTimeout(() => $('.heading-anchor[href="' + hash + '"]').click())
 
             Outline.update()
@@ -73,7 +72,7 @@ export default class {
         else
             uri = localStorage.getItem('recent:' + this.allFiles.root)
 
-        this.open(uri, done)
+        this.open(uri, false, done)
     }
 
     static openReadme(done) {
@@ -84,12 +83,12 @@ export default class {
         if (!file)
             return done(false)
 
-        this.open(file.path, done)
+        this.open(file.path, false, done)
     }
 
     static openFirst(done) {
         if (this.allFiles.list && this.allFiles.list.length) {
-            return this.open(this.allFiles.list[0].path, done)
+            return this.open(this.allFiles.list[0].path, false, done)
         }
 
         return done(false)

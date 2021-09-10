@@ -44,7 +44,6 @@ func markdown(p string) (ret string, e error) {
 
 func markdownRender(source []byte) (ret *bytes.Buffer, e error) {
 	md := markdownInstance()
-	//source = simplifyCodeBlock(source)  //TODO
 	context := parser.NewContext(parser.WithIDs(&HeadingIDs{times: map[string]int{}}))
 
 	ret = new(bytes.Buffer)
@@ -81,12 +80,6 @@ func markdownFilter(p string, output *bytes.Buffer) (ret string, e error) {
 			selection.SetAttr("target", "_blank")
 		} else if !strings.HasPrefix(href, "#") {
 			selection.SetAttr("href", path.Clean("/"+href))
-		}
-	})
-
-	doc.Find("pre").Each(func(i int, selection *goquery.Selection) {
-		if class, ok := selection.Find("code").Attr("class"); ok {
-			selection.AddClass(class)
 		}
 	})
 

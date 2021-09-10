@@ -7,7 +7,6 @@ function load(template) {
 
     require('./components/main.js')
     require('./components/main.scss')
-    require('./components/markdown.scss')
     require('./components/addition.scss')
 }
 

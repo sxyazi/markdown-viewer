@@ -30,7 +30,7 @@ $('#switch').click(() => {
 })
 
 $('#files').on('click', 'li', function () {
-    Store.open($(this).attr('path'))
+    Store.open($(this).attr('path'), false)
 })
 
 $.get(apiEndpoint('files'), function (files) {

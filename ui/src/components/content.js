@@ -40,7 +40,7 @@ function atBottom($currentHeading = Store.currentHeading) {
 function renderAsync() {
     const callback = element => {
         let tag = element.tagName.toLowerCase()
-        ~(tag === 'pre' ? renderCode :
+        ~(tag === 'code' ? renderCode :
             tag === 'img' ? renderImage : renderMath)(element)
     }
 
@@ -49,7 +49,7 @@ function renderAsync() {
         el.removeAttribute('src');
         respondToVisible(el, callback)
     }
-    for (let el of $('#content .math, #content pre')) {
+    for (let el of $('#content .math, #content pre>code')) {
         respondToVisible(el, callback)
     }
 }
@@ -59,9 +59,17 @@ function renderCode(element) {
     if (element.dataset.rendering) return
     else element.dataset.rendering = 'true'
 
+    // Line highlighting
+    const regex = /(lang(?:uage)?\-.+)\{([\d,\-]+)\}/
+    const lines = regex.exec(element.className)
+    if (lines) {
+        element.parentNode.setAttribute('data-line', lines[2])
+        element.className = element.className.replace(regex, '$1')
+    }
+
     prism().highlightElement(element)
-    element.classList.add('rendered')
-    adjustHeading(element)
+    element.parentNode.classList.add('rendered')
+    adjustHeading()
 }
 
 function renderImage(element) {
@@ -71,7 +79,7 @@ function renderImage(element) {
 
     element.setAttribute('src', element.getAttribute('data-src'))
     element.classList.add('rendered')
-    adjustHeading(element)
+    adjustHeading()
 }
 
 function renderMath(element) {
@@ -98,14 +106,14 @@ function renderMath(element) {
         displayMode: displayMode,
     })
     element.classList.add('rendered')
-    adjustHeading(element)
+    adjustHeading()
 
     Store.mathElements[text] = element.cloneNode(true)
 }
 
 $('#content').on('click', 'a:not(.heading-anchor)', function () {
     const href = $(this).attr('href')
-    Store.open(href, ok => {
+    Store.open(href, false, ok => {
         if (ok) return
         $(this).attr('target') ? window.open(href) : (location.href = href)
     })
@@ -169,11 +177,11 @@ setTimeout(function watcher() {
             stat = {}
         }
 
-        if (stat.updated_at <= Store.currentFile.updated_at) {
+        if (stat.updated_at <= Store.currentFile.updated_at)
             return setTimeout(watcher, 500)
-        }
 
-        Store.open(Store.currentFile.path, () => {
+        const hash = Store.currentHeading.length ? `#${Store.currentHeading.attr('id')}` : ''
+        Store.open(Store.currentFile.path + hash, true, () => {
             Store.currentFile.updated_at = stat.updated_at
             setTimeout(watcher, 500)
         })

@@ -1,4 +1,6 @@
 body {
+  @apply w-screen h-screen flex overflow-hidden;
+
   letter-spacing: .2px;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -141,145 +143,10 @@ aside.unfold {
   color: #2c3e50;
   @apply w-full h-full px-12 md:px-14 lg:px-16 py-7 overflow-auto;
   @apply dark:bg-gray-800 dark:text-gray-200;
-
-  a {
-    @apply text-blue-500 dark:text-blue-300;
-  }
-
-  img {
-    @apply opacity-0 transition-opacity delay-100;
-
-    &.rendered {
-      @apply opacity-100;
-    }
-  }
-
-  pre {
-    @apply border opacity-0 transition-opacity delay-100 cursor-text break-all break-words whitespace-pre-wrap;
-    @apply border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800;
-
-    &.rendered {
-      @apply opacity-100;
-    }
-
-    & + p {
-      margin-top: 16px;
-    }
-
-    & + pre {
-      margin-top: -18px;
-      @apply rounded-t-none;
-    }
-  }
-
-  ul {
-    ul {
-      margin-bottom: 16px;
-    }
-
-    li {
-      @apply list-disc;
-
-      p {
-        @apply mt-0 mb-2;
-      }
-    }
-  }
-
-  h1 {
-    @apply text-center border-b-0 mb-12;
-
-    .heading-anchor {
-      @apply hidden;
-    }
-  }
-
-  h2 {
-    @apply dark:border-gray-600;
-  }
-
-  * + h1 {
-    @apply mt-12;
-  }
-
-  .heading {
-    @apply relative;
-
-    .heading-anchor {
-      @apply pr-1 absolute text-green-600 dark:text-green-400 opacity-0 transform -translate-x-full transition-opacity;
-    }
-
-    &:hover .heading-anchor {
-      @apply opacity-100;
-    }
-  }
-
-  .math {
-    @apply opacity-0 transition-opacity;
-
-    &.rendered {
-      @apply opacity-100;
-    }
-
-    &.inline {
-      @apply my-0.5 inline-block;
-    }
-
-    &.display {
-      @apply block;
-    }
-  }
-
-  code {
-    @apply dark:bg-gray-700;
-  }
-
-  table {
-    @apply overflow-visible;
-
-    tr {
-      @apply dark:bg-gray-800;
-    }
-
-    tr, th, td {
-      @apply dark:border-gray-700;
-    }
-
-    th:empty {
-      @apply hidden;
-    }
-  }
-
-  details {
-    @apply text-sm;
-
-    summary {
-      @apply mb-2;
-    }
-
-    summary p {
-      @apply inline;
-    }
-
-    & > :last-child {
-      @apply mb-0;
-    }
-
-    &[open] {
-      @apply px-3 py-3 relative border border-dashed border-gray-200 dark:border-gray-600;
-
-      summary {
-        font-size: 0;
-        @apply inline absolute top-1 right-2 outline-none;
-      }
-
-      summary::before {
-        content: '\00D7';
-        @apply text-xl text-gray-400;
-      }
-    }
-  }
+  @import 'content';
 }
+
+@import '~prismjs/plugins/line-highlight/prism-line-highlight.css';
 
 @import "~prism-themes/themes/prism-base16-ateliersulphurpool.light.css" (prefers-color-scheme: light);
 
