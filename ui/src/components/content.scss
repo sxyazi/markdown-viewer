@@ -1,3 +1,8 @@
+/* General */
+ol, ul, p {
+  line-height: 1.7rem;
+}
+
 /* Link */
 a {
   @apply text-blue-500 dark:text-blue-300 outline-none no-underline hover:underline;
@@ -15,26 +20,24 @@ ol {
 
 ol,
 ul {
-  padding-left: 2em;
-  @apply mb-4;
+  @apply my-4 pl-4;
 }
 
 ul {
+  @apply list-disc;
+
   ul {
-    @apply mb-4;
+    @apply m-0;
+    list-style: circle;
   }
 
-  li {
-    @apply list-disc;
-
-    p {
-      @apply mt-0 mb-2;
-    }
+  li p {
+    @apply mt-0 mb-2;
   }
 }
 
-li + li {
-  margin-top: .25em;
+li {
+  @apply mt-1;
 }
 
 /* Image */
@@ -45,61 +48,66 @@ img {
     @apply opacity-100;
   }
 
+  &[align="left"] {
+    @apply float-left mb-10 mr-10;
+  }
+
+  &[align="right"] {
+    @apply float-right mb-10 ml-10;
+  }
+
+  &[align="middle"] {
+    @apply block mx-auto;
+  }
+
   @media (prefers-color-scheme: dark) {
     filter: brightness(.85) contrast(1.2);
   }
 }
 
 /* Heading */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  @apply mb-4;
-  margin-top: 24px;
-  font-weight: 600;
-  line-height: 1.25;
+.heading {
+  @apply mb-4 font-semibold;
+
+  &::before {
+    content: '';
+    @apply block clear-both;
+  }
+
+  & + .heading {
+    @apply mt-0;
+  }
 }
 
-h1,
-h2 {
-  padding-bottom: .3em;
-  border-bottom: 1px solid #eaecef;
-}
-
-h1 {
+h1.heading {
   font-size: 2em;
-  @apply text-center border-b-0 mb-12;
+  @apply mt-5 mb-12 text-center;
 
   .heading-anchor {
     @apply hidden;
   }
 }
 
-* + h1 {
-  @apply mt-12;
-}
-
-h2 {
+h2.heading {
   font-size: 1.5em;
-  @apply dark:border-gray-600;
+  @apply mt-10 pb-1 border-b border-gray-100 dark:border-gray-600;
 }
 
-h3 {
+h3.heading {
   font-size: 1.25em;
+  @apply mt-8;
 }
 
-h4 {
+h4.heading {
   font-size: 1em;
+  @apply mt-8;
 }
 
-h5 {
+h5.heading {
   font-size: .875em;
 }
 
-h6 {
+h6.heading {
   font-size: .85em;
 }
 
@@ -147,7 +155,7 @@ pre {
   }
 
   & + p {
-    @apply mb-4;
+    @apply mt-4;
   }
 
   & + pre {
@@ -160,7 +168,7 @@ code {
   font-size: 85%;
   padding: .2em .4em;
   border-radius: 3px;
-  @apply dark:bg-gray-700;
+  @apply bg-gray-100 dark:bg-gray-700;
 }
 
 /* Misc */
