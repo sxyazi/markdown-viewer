@@ -5,7 +5,7 @@ ol, ul, p {
 
 /* Link */
 a {
-  @apply text-blue-500 dark:text-blue-300 outline-none no-underline hover:underline;
+  @apply font-medium text-green-500 dark:text-green-300 outline-none no-underline hover:underline;
 }
 
 /* Paragraph */
@@ -20,7 +20,7 @@ ol {
 
 ol,
 ul {
-  @apply my-4 pl-4;
+  @apply my-4 pl-5;
 }
 
 ul {
@@ -80,7 +80,7 @@ img {
 }
 
 h1.heading {
-  font-size: 2em;
+  font-size: 2.2rem;
   @apply mt-5 mb-12 text-center;
 
   .heading-anchor {
@@ -89,26 +89,26 @@ h1.heading {
 }
 
 h2.heading {
-  font-size: 1.5em;
+  font-size: 1.65rem;
   @apply mt-10 pb-1 border-b border-gray-100 dark:border-gray-600;
 }
 
 h3.heading {
-  font-size: 1.25em;
+  font-size: 1.35rem;
   @apply mt-8;
 }
 
 h4.heading {
-  font-size: 1em;
+  font-size: 1rem;
   @apply mt-8;
 }
 
 h5.heading {
-  font-size: .875em;
+  font-size: .875rem;
 }
 
 h6.heading {
-  font-size: .85em;
+  font-size: .85rem;
 }
 
 /* Table */
@@ -168,7 +168,7 @@ code {
   font-size: 85%;
   padding: .2em .4em;
   border-radius: 3px;
-  @apply bg-gray-100 dark:bg-gray-700;
+  @apply text-gray-600 dark:text-gray-200 bg-gray-100 dark:bg-gray-700;
 }
 
 /* Misc */
@@ -224,6 +224,7 @@ details {
   }
 }
 
+// TODO
 blockquote {
   padding: 0 1em;
   color: #6a737d;
