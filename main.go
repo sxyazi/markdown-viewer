@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path"
 )
 
 func home(w http.ResponseWriter, req *http.Request) {
@@ -13,7 +12,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 }
 
 func stat(w http.ResponseWriter, req *http.Request) {
-	p := leftSlash(req.FormValue("path"))
+	p := cleanSlash(req.FormValue("path"))
 	info, err := os.Stat(store.workingPath + p)
 
 	var resp *File
@@ -37,7 +36,7 @@ func stat(w http.ResponseWriter, req *http.Request) {
 }
 
 func file(w http.ResponseWriter, req *http.Request) {
-	html, err := markdown(path.Clean(store.workingPath + leftSlash(req.FormValue("path"))))
+	html, err := markdown(store.workingPath + cleanSlash(req.FormValue("path")))
 	if err != nil {
 		return
 	}
@@ -52,7 +51,7 @@ func files(w http.ResponseWriter, req *http.Request) {
 }
 
 func forward(w http.ResponseWriter, req *http.Request) {
-	p := store.workingPath + leftSlash(req.URL.Query().Get("path"))
+	p := store.workingPath + cleanSlash(req.URL.Query().Get("path"))
 
 	if _, err := os.Stat(p); err != nil {
 		w.WriteHeader(http.StatusNotFound)

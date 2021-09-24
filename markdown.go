@@ -13,7 +13,7 @@ import (
 	"github.com/yuin/goldmark/renderer/html"
 	"github.com/yuin/goldmark/util"
 	"io/ioutil"
-	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -67,7 +67,7 @@ func markdownFilter(p string, output *bytes.Buffer) (ret string, e error) {
 		return
 	}
 
-	parent := path.Dir(p)
+	parent := filepath.Dir(p)
 	doc.Find("img").Each(func(i int, selection *goquery.Selection) {
 		src, _ := selection.Attr("src")
 		selection.SetAttr("src", forwardResource(parent, src))
@@ -79,7 +79,7 @@ func markdownFilter(p string, output *bytes.Buffer) (ret string, e error) {
 		if isExternalLink(href) {
 			selection.SetAttr("target", "_blank")
 		} else if !strings.HasPrefix(href, "#") {
-			selection.SetAttr("href", path.Clean("/"+href))
+			selection.SetAttr("href", cleanSlash(href))
 		}
 	})
 

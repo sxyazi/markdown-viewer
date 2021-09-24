@@ -5,6 +5,7 @@ yarn build
 
 cd ..
 rm bindata.go
+go get -u github.com/go-bindata/go-bindata/...
 go-bindata ui/dist
 
 rm -rf dist

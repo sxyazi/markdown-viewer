@@ -15,7 +15,7 @@ import (
 )
 
 func getFiles(root string) (files Files) {
-	files.Root = path.Clean(root)
+	files.Root = cleanSlash(root)
 	rootPathLength := len(files.Root)
 
 	filepath.Walk(files.Root, func(p string, info fs.FileInfo, err error) error {
@@ -33,7 +33,7 @@ func getFiles(root string) (files Files) {
 
 		files.List = append(files.List, &File{
 			Name:      markdownName(p),
-			Path:      path.Clean("/" + p[rootPathLength:]),
+			Path:      cleanSlash(p[rootPathLength:]),
 			Size:      info.Size(),
 			Exists:    true,
 			UpdatedAt: info.ModTime().UnixNano(),
@@ -50,9 +50,9 @@ func getArgument() string {
 		panic("Please pass at least one parameters")
 	}
 
-	arg := bothSlash(os.Args[1])
+	arg := cleanSlash(os.Args[1])
 	if _, e := os.Stat(arg); e != nil {
-		panic("The working path does not exist")
+		panic("The working path does not exist: " + arg)
 	}
 
 	return arg
@@ -84,7 +84,7 @@ func distinct(id []byte, records map[string]int) []byte {
 }
 
 func isIgnored(p string) bool {
-	p = path.Clean(p)
+	p = cleanSlash(p)
 
 	if strings.Contains(p, "/node_modules/") {
 		return true
@@ -97,11 +97,12 @@ func isIgnored(p string) bool {
 	return false
 }
 
-func leftSlash(p string) string {
-	return path.Clean("/" + p)
-}
+func cleanSlash(p string) string {
+	p = strings.Replace(p, "\\", "/", -1)
+	if filepath.IsAbs(p) {
+		return path.Clean(p + "/")
+	}
 
-func bothSlash(p string) string {
 	return path.Clean("/" + p + "/")
 }
 
@@ -115,7 +116,7 @@ func jsonEncode(value interface{}) string {
 }
 
 func contentType(filename string) string {
-	switch path.Ext(strings.ToLower(filename)) {
+	switch filepath.Ext(strings.ToLower(filename)) {
 	case ".jpg":
 		fallthrough
 	case ".jpeg":
@@ -132,11 +133,11 @@ func contentType(filename string) string {
 }
 
 func fileExistsDeep(root string, directory string, filename string) bool {
-	directory = bothSlash(directory)
-	parts := strings.Split(bothSlash(root), directory)
+	directory = cleanSlash(directory)
+	parts := strings.Split(cleanSlash(root), directory)
 
 	lastIndex := len(parts) - 1
-	if strings.Contains(bothSlash(parts[lastIndex]), directory) {
+	if strings.Contains(cleanSlash(parts[lastIndex]), directory) {
 		parts[lastIndex] = ""
 	} else {
 		parts = parts[:lastIndex]
@@ -145,9 +146,9 @@ func fileExistsDeep(root string, directory string, filename string) bool {
 	lead := ""
 	for _, part := range parts {
 		lead += part + directory
-		lead = path.Clean(lead)
+		lead = cleanSlash(lead)
 
-		if _, err := os.Stat(lead + filename); err == nil {
+		if _, err := os.Stat(lead+"/"+filename); err == nil {
 			return true
 		}
 	}
@@ -156,7 +157,7 @@ func fileExistsDeep(root string, directory string, filename string) bool {
 }
 
 func markdownName(p string) string {
-	return path.Base(p)
+	return filepath.Base(p)
 }
 
 func isExternalLink(link string) bool {
@@ -170,8 +171,8 @@ func forwardResource(relative, src string) string {
 	}
 
 	if !strings.HasPrefix(src, "/") {
-		src = path.Join(relative, src)[len(store.workingPath):]
+		src = filepath.Join(relative, src)[len(store.workingPath):]
 	}
 
-	return "/forward?path=" + url.QueryEscape(leftSlash(src))
+	return "/forward?path=" + url.QueryEscape(cleanSlash(src))
 }
