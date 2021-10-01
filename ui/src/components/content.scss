@@ -157,12 +157,12 @@ pre {
   }
 
   & + pre {
-    margin-top: -18px;
-    @apply relative rounded-t-none pt-6;
+    margin-top: -8px;
+    @apply relative rounded-t-none;
 
     &::before {
       content: '';
-      @apply absolute left-0 top-3 w-full border-t border-gray-200 border-opacity-80 border-dashed;
+      @apply absolute top-0 left-0 w-full border-t border-dashed border-opacity-80 border-gray-200 dark:border-gray-600;
     }
   }
 }
