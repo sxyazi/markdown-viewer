@@ -5,7 +5,7 @@ ol, ul, p {
 
 /* Link */
 a {
-  @apply font-medium text-green-500 dark:text-green-300 outline-none no-underline hover:underline;
+  @apply text-green-600 dark:text-green-400 outline-none no-underline hover:underline;
 }
 
 /* Paragraph */
@@ -140,8 +140,8 @@ table {
 /* Code */
 pre {
   font-size: .85rem;
-  @apply p-3 border rounded relative opacity-0 transition-opacity delay-100 cursor-text;
-  @apply border-gray-200 dark:border-gray-700 dark:bg-gray-800;
+  @apply p-3 rounded relative opacity-0 transition-opacity delay-100 cursor-text;
+  @apply bg-gray-50 dark:bg-gray-700 dark:bg-opacity-30;
 
   code {
     font-size: 100%;
@@ -158,7 +158,12 @@ pre {
 
   & + pre {
     margin-top: -18px;
-    @apply rounded-t-none;
+    @apply relative rounded-t-none pt-6;
+
+    &::before {
+      content: '';
+      @apply absolute left-0 top-3 w-full border-t border-gray-200 border-opacity-80 border-dashed;
+    }
   }
 }
 
@@ -222,11 +227,16 @@ details {
   }
 }
 
-// TODO
 blockquote {
-  padding: 0 1em;
-  color: #6a737d;
-  border-left: .25em solid #dfe2e5;
+  @apply my-4 px-5 py-6 dark:bg-gray-700 dark:bg-opacity-60 border-l-8 dark:border-green-500;
+
+  code {
+    @apply dark:bg-gray-600 dark:bg-opacity-60;
+  }
+
+  :last-child {
+    @apply mb-0;
+  }
 }
 
 kbd {

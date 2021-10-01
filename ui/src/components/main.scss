@@ -20,7 +20,7 @@ aside {
   }
 
   h3 {
-    @apply ml-7 mt-8 mb-5 hidden lg:flex font-bold text-2xl text-gray-600 dark:text-gray-200;
+    @apply ml-7 mt-8 mb-5 hidden lg:flex font-bold text-2xl text-gray-600 dark:text-gray-300;
   }
 
   #switch {
@@ -68,7 +68,7 @@ aside.unfold {
 }
 
 #files {
-  @apply px-7 pb-7 hidden lg:flex flex-col text-sm overflow-auto text-gray-700 dark:text-gray-200;
+  @apply px-7 pb-7 hidden lg:flex flex-col text-sm overflow-auto text-gray-700 dark:text-gray-300;
 
   ul {
     @apply flex flex-col;
@@ -142,7 +142,7 @@ aside.unfold {
 #content {
   color: #2c3e50;
   @apply w-full h-full px-12 md:px-14 lg:px-16 py-7 overflow-auto;
-  @apply dark:bg-gray-800 dark:text-gray-200;
+  @apply dark:bg-gray-800 dark:text-gray-300;
   @import 'content';
 }
 

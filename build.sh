@@ -17,3 +17,5 @@ CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o dist/windows.exe -ldflags "-
 upx dist/linux
 upx dist/macos
 upx dist/windows.exe
+
+go mod tidy
