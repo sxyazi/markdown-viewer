@@ -145,24 +145,26 @@ $('#content').scroll(debounce(() => {
     const $headings = $('#content .heading')
     if ($headings.length === 0) return
 
-    let current
+    let current, next
     for (let i = $headings.length - 1; i >= 0; i--) {
         if ($headings.eq(i).position().top <= 0) {
             current = $headings.eq(i)
+            next = (i + 1) === $headings.length ? current : $headings.eq(i + 1)
             break
         }
     }
 
     if (!current)
         Store.currentHeading = {}
-    else if (atBottom(current))
+    // Since current always missed, here needs to use its next
+    else if (atBottom(next))
         Store.currentHeading = $headings.last()
     else
         Store.currentHeading = current
 
     syncLocation()
 
-}, 300))
+}, 20))
 
 setTimeout(function watcher() {
     if (!Store.currentFile.path)

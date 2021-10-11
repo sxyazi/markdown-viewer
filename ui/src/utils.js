@@ -55,18 +55,6 @@ function scrollTo($e, top, time = 50) {
     $e.animate({scrollTop: top}, time, () => setTimeout(() => Store.scrolling = false, 500))
 }
 
-function syncLocation(uri) {
-    let target
-    let current = decodeURIComponent(location.pathname) + decodeURIComponent(location.hash)
-
-    if (uri)
-        target = parsePath(uri).join('')
-    else
-        target = Store.currentFile.path + (Store.currentHeading.length ? `#${Store.currentHeading.attr('id')}` : '')
-
-    if (current !== target) history.pushState(null, '', target)
-}
-
 function apiEndpoint(url) {
     if (location.port === '3000') {
         return `/${url}`
@@ -166,7 +154,7 @@ function copyElementText(element) {
     return true
 }
 
-var crc32 = (() => {
+const crc32 = (() => {
     const table = [];
     for (let n = 0, c; n < 256; n++) {
         c = n;
@@ -182,6 +170,18 @@ var crc32 = (() => {
         return (crc ^ (-1)) >>> 0;
     }
 })()
+
+const syncLocation = debounce(uri => {
+    let target
+    let current = decodeURIComponent(location.pathname) + decodeURIComponent(location.hash)
+
+    if (uri)
+        target = parsePath(uri).join('')
+    else
+        target = Store.currentFile.path + (Store.currentHeading.length ? `#${Store.currentHeading.attr('id')}` : '')
+
+    if (current !== target) history.pushState(null, '', target)
+}, 300)
 
 export {
     clone,

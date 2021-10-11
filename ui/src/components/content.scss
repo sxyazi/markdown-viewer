@@ -228,10 +228,10 @@ details {
 }
 
 blockquote {
-  @apply my-4 px-5 py-6 dark:bg-gray-700 dark:bg-opacity-60 border-l-8 dark:border-green-500;
+  @apply my-4 px-5 py-6 bg-gray-50 dark:bg-gray-700 dark:bg-opacity-60 border-l-8 border-green-400 dark:border-green-500;
 
   code {
-    @apply dark:bg-gray-600 dark:bg-opacity-60;
+    @apply bg-gray-200 bg-opacity-60 dark:bg-gray-600 dark:bg-opacity-60;
   }
 
   :last-child {
